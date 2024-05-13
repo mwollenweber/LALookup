@@ -26,6 +26,7 @@ def addressSearch(request):
         print('Raw Data: "%s"' % request.body)
         if request.content_type == 'application/json':
             try:
+                print("json data!!!")
                 data = json.loads(request.body)
                 address = data['address']
                 if len(address) > 5:
@@ -94,11 +95,14 @@ def test(request):
 
 
 def LookupStateLegislators(request):
-    search(request)
+    addressSearch(request)
 
 
 def contact(request):
-    template = loader.get_template('contact.html')
-    context = {}
-    return HttpResponse(template.render(context, request))
+    print(request.body)
+    #print('Raw Data: "%s"' % request.body)
+    # template = loader.get_template('contact.html')
+    # context = {}
+    # return HttpResponse(template.render(context, request))
+    return HttpResponse("Done")
 
