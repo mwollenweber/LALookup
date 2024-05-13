@@ -1,0 +1,5 @@
+export DBNAME="lalookup"
+export DBUSER="lalookup"
+export DBPASSWORD="lalookup"
+export DBHOST="127.0.0.1"
+

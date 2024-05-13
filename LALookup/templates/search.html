@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+        <div class="container-fluid">
+        <h1 class="text-center"> Louisiana Political Lookup </h1><br><br>
+
+         <div class="row justify-content-md-center p-1" >
+             <div class="col-md-auto p-1">
+                <input type="text" id="addressText" value="" placeholder="Address" title="Please enter your address" >
+             </div> <!-- col -->
+
+             <div class="col-md-auto p-1">
+                  <input class="btn btn-dark" type="button" value="Submit"  onclick="clickSubmit(this.form)"  >
+
+             </div> <!-- col -->
+        </div> <!-- row -->
+
+        <div class="row justify-content-md-center" >
+           <div class="col-md-auto "></div>
+            <div class="col-md-auto ">
+                <input class="btn btn-primary btn-lg" type="button" value="Locate Me"  onclick="submitLocation()"  >
+            </div>
+        </div> <!-- row -->
+    </div> <!-- container -->
+
+
+    
+{% endblock content %}
