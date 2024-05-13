@@ -16,7 +16,7 @@ def index(request):
 
 
 @require_http_methods(["GET", "POST"])
-def search(request):
+def addressSearch(request):
     if request.method == 'GET':
         template = loader.get_template('search.html')
         context = {}
@@ -54,7 +54,7 @@ def search(request):
             except Exception as e:
                 traceback.print_exc()
                 return JsonResponse({'error': 'An error occurred'})
-        else:
+        else: #not json
             try:
                 address = request.POST['address']
                 if len(address) > 5:
@@ -70,15 +70,14 @@ def search(request):
                     'parish': '',
                     'state_legislators': getStateLegislators(lat, lon)
                 }
-                return JsonResponse(r)
-
-            except KeyError as e:
-                traceback.print_exc()
-                return JsonResponse({'error': '{e}'})
+                #fixme -- shouldn't return json
+                #should be some type of formatted response
+                #https://getbootstrap.com/docs/4.3/components/card/
+                return HttpResponse(str(r))
 
             except Exception as e:
                 traceback.print_exc()
-                return JsonResponse({'error': '{e}'})
+                return HttpResponse("An error occurred")
 
 
 def test(request):
@@ -91,9 +90,15 @@ def test(request):
         'parish': '',
         'state_legislators': getStateLegislators(lat, lon)
     }
-
     return JsonResponse(r)
 
 
 def LookupStateLegislators(request):
     search(request)
+
+
+def contact(request):
+    template = loader.get_template('contact.html')
+    context = {}
+    return HttpResponse(template.render(context, request))
+

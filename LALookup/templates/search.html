@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-        <div class="container-fluid">
+        <div class="container-fluid"> <!-- Search Container -->
         <h1 class="text-center"> Louisiana Political Lookup </h1><br><br>
 
          <div class="row justify-content-md-center p-1" >
@@ -18,11 +18,13 @@
         <div class="row justify-content-md-center" >
            <div class="col-md-auto "></div>
             <div class="col-md-auto ">
-                <input class="btn btn-primary btn-lg" type="button" value="Locate Me"  onclick="submitLocation()"  >
+                <input class="btn btn-primary" type="button" value="Locate Me"  onclick="submitLocation()"  >
             </div>
         </div> <!-- row -->
     </div> <!-- container -->
-
-
     
+    <div class="container-fluid" id="results-container"> <!-- Results Container -->
+    
+    </div>
+
 {% endblock content %}

@@ -21,7 +21,7 @@ from LALookup import views
 urlpatterns = [
     path('', views.index),
     path('test', views.test),
-    path('search', views.search),
-    path('StateLegislators', views.LookupStateLegislators),
+    path('addressSearch', views.addressSearch),
+    path('stateLegislators', views.LookupStateLegislators),
     path('admin/', admin.site.urls),
 ]
