@@ -8,7 +8,7 @@ from django.utils.timezone import make_aware
 from django.views.decorators.http import require_http_methods
 from django.template import loader
 from django.conf import settings
-from .lalookup import address2latlon, getStateLegislators
+from .lalookup import address2latlon, getStateLegislators, latlon2Parish
 
 
 def index(request):
@@ -26,21 +26,21 @@ def addressSearch(request):
         print('Raw Data: "%s"' % request.body)
         if request.content_type == 'application/json':
             try:
-                print("json data!!!")
                 data = json.loads(request.body)
                 address = data['address']
-                if len(address) > 5:
+                if len(address) > 10:
                     lat, lon = address2latlon(address)
                 else:
                     lat = data['lat']
                     lon = data['lon']
 
                 r = {
+                    'status': 'success',
                     'address': address,
                     'lat': lat,
                     'long': lon,
-                    'parish': '',
-                    'state_legislators': getStateLegislators(lat, lon)
+                    'parish': latlon2Parish(lat, lon),
+                    'results': getStateLegislators(lat, lon)
                 }
                 return JsonResponse(r)
 
@@ -58,19 +58,21 @@ def addressSearch(request):
         else: #not json
             try:
                 address = request.POST['address']
-                if len(address) > 5:
+                if len(address) > 10:
                     lat, lon = address2latlon(address)
                 else:
                     lat = request.POST['lat']
                     lon = request.POST['lon']
 
                 r = {
+                    'status': 'success',
                     'address': address,
                     'lat': lat,
                     'long': lon,
-                    'parish': '',
-                    'state_legislators': getStateLegislators(lat, lon)
+                    'parish': latlon2Parish(lat, lon),
+                    'results': getStateLegislators(lat, lon)
                 }
+
                 #fixme -- shouldn't return json
                 #should be some type of formatted response
                 #https://getbootstrap.com/docs/4.3/components/card/
@@ -82,14 +84,15 @@ def addressSearch(request):
 
 
 def test(request):
-    query = "4521 Magazine St, 70115"
-    lat, lon = address2latlon(query)
+    address = "4521 Magazine St, 70115"
+    lat, lon = address2latlon(address)
     r = {
-        'query': query,
+        'status': 'success',
+        'address': address,
         'lat': lat,
         'long': lon,
-        'parish': '',
-        'state_legislators': getStateLegislators(lat, lon)
+        'parish': latlon2Parish(lat, lon),
+        'results': getStateLegislators(lat, lon)
     }
     return JsonResponse(r)
 
@@ -100,9 +103,14 @@ def LookupStateLegislators(request):
 
 def contact(request):
     print(request.body)
-    #print('Raw Data: "%s"' % request.body)
-    # template = loader.get_template('contact.html')
-    # context = {}
-    # return HttpResponse(template.render(context, request))
-    return HttpResponse("Done")
+    print('Raw Data: "%s"' % request.body)
+    template = loader.get_template('contact.html')
+    context = {
+        'first_name': 'John',
+        'last_name': 'Doe',
+        'district': '42',
+        'office_title': 'Senator',
+    }
+    return HttpResponse(template.render(context, request))
+
 

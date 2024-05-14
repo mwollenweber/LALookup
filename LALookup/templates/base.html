@@ -13,14 +13,18 @@
         {% load static %}
         {# Load the tag library #}
         {% load bootstrap5 %}
+        
 
         {# Load CSS and JavaScript #}
         {% bootstrap_css %}
         {% bootstrap_javascript %}
+        
+     
 
         {# Display django.contrib.messages as Bootstrap alerts #}
         {% bootstrap_messages %}
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
 
         <script>
@@ -43,7 +47,6 @@
 
             function setAddress(){
                 address = addressText.value;
-
             }
 
             function success(data) {
@@ -51,19 +54,12 @@
             }
 
             function clickSubmit() {
-                formData = {
-                    lat: lat,
-                    lon: lon,
-                    address: addressText.value,
-                }
-
                 form = document.getElementById("searchform");
+                form.method = 'POST';
                 form.lat.value = lat;
                 form.lon.value = lon;
                 form.submit();
-
             }
-
 
         </script>
 

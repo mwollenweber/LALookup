@@ -38,12 +38,14 @@ class Legislator(Person):
     officePhone = models.CharField(max_length=200, blank=True, null=True, db_index=True)
     officeEmail = models.CharField(max_length=200, blank=True, null=True, db_index=True)
     officeURL = models.CharField(max_length=200, blank=True, null=True, db_index=True)
+    officeTitle = models.CharField(max_length=200, blank=True, null=True, db_index=True)
 
     def __str__(self):
         return self.fullname
 
     def todict(self):
         return {
+            'office_title': self.officeTitle,
             'first_name': self.first_name,
             'last_name': self.last_name,
             'email': self.officeEmail,
@@ -55,8 +57,7 @@ class Legislator(Person):
             'twitter': self.twitter,
             'facebook': self.facebook,
             'instagram': self.instagram,
-            'office_website': '',
-            'campaign_website': '',
+            'campaign_url': '',
             'youtube': self.youtube,
             'chamber': self.chamber,
         }

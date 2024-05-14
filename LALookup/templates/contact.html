@@ -1,16 +1,18 @@
 {% extends "base.html" %}
-
 {% block content %}
+    <h1>Your Elected Leaders</h1><br>
+    
     <div class="container-fluid" id="results-container" > <!-- Results Container -->
         <div class="card" style="width: 18rem;" >
-          <img src="..." class="card-img-top" alt="...">
+          <!-- <img src="placeholder-headshot.png " class="card-img-top" alt="placeholder"> -->
           <div class="card-body">
-            <h5 class="card-title">State Rep Example</h5>
-            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+            <h5 class="card-title"> {{ first_name }} {{ last_name }}</h5>
+            <p class="card-text"> {{ office_title }} in the {{ district }} district </p>
           </div>
           <ul class="list-group list-group-flush">
-            <li class="list-group-item">email: <a href="mailto:example@test.com">example@test.com</a></li>
-              <li class="list-group-item">phone: <a href="tel:504-555-5555">504-555-5555</a></li>
+            <li class="list-group-item"><i class="bi bi-mailbox"> <a href="mailto:example@test.com"> example@test.com</a> </i> </li>
+              <li class="list-group-item"><i class="bi bi-telephone"> <a href="tel:504-555-5555">504-555-5555</a> </i> </li>
+              <li class="list-group-item"><i class="bi bi-link"> <a href="">Offical Website</a> </i> </li>
           </ul>
         </div> <!-- card -->
             
