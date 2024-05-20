@@ -1,5 +1,4 @@
 import traceback
-
 import geopandas as gp
 import csv
 from shapely.geometry import Point
