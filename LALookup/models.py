@@ -75,7 +75,7 @@ class Legislator(Person):
 #     name = models.CharField(max_length=200)
 #
 #
-# class Council(models.Model):
+# class Council(Person):
 #     name = models.CharField(max_length=200)
 #     parish = models.CharField(max_length=200)
 #     district = models.IntegerField(default=0)

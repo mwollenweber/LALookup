@@ -40,7 +40,8 @@ def addressSearch(request):
                     'lat': lat,
                     'long': lon,
                     'parish': latlon2Parish(lat, lon),
-                    'results': getStateLegislators(lat, lon)
+                    'results': getStateLegislators(lat, lon),
+                    #'count': len(results),
                 }
                 return JsonResponse(r)
 
@@ -76,6 +77,7 @@ def addressSearch(request):
                 #fixme -- shouldn't return json
                 #should be some type of formatted response
                 #https://getbootstrap.com/docs/4.3/components/card/
+                print("HERE HERE HERE")
                 return HttpResponse(str(r))
 
             except Exception as e:
@@ -101,15 +103,19 @@ def LookupStateLegislators(request):
     addressSearch(request)
 
 
-def contact(request):
+def renderResposne(request, response=None):
+    if response and response.has_key('results'):
+        results = response['results']
+        print(results)
+    else:
+        print('No results')
+        results = None
+
     print(request.body)
     print('Raw Data: "%s"' % request.body)
     template = loader.get_template('contact.html')
     context = {
-        'first_name': 'John',
-        'last_name': 'Doe',
-        'district': '42',
-        'office_title': 'Senator',
+        'results': results,
     }
     return HttpResponse(template.render(context, request))
 
