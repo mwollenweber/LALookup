@@ -1,15 +1,16 @@
 from django.db import models
 
 
+
+
 class Person(models.Model):
     first_name = models.CharField(max_length=200, db_index=True)
     last_name = models.CharField(max_length=200, db_index=True)
     fullname = models.CharField(max_length=200, blank=True, null=True)
-    active = models.BooleanField(default=True, db_index=True)
     personalEmail = models.CharField(max_length=200, blank=True, null=True, db_index=True)
     homePhone = models.CharField(max_length=200, blank=True, null=True)
     mobile = models.CharField(max_length=200, blank=True, null=True)
-    status = models.CharField(max_length=200, blank=True, null=True)
+    #status = models.CharField(max_length=200, blank=True, null=True)
     photoURL = models.CharField(max_length=200, blank=True, null=True)
     gender = models.CharField(max_length=200, blank=True, null=True)
     party = models.CharField(max_length=200, blank="U", null=True, db_index=True)
@@ -28,9 +29,15 @@ class Person(models.Model):
     class Meta:
         abstract = True
 
+class User(Person):
+    id = models.AutoField(primary_key=True)
+    active = models.BooleanField(default=True, db_index=True)
+    api_key = models.CharField(max_length=200, blank=True, null=True)
+
 
 class Legislator(Person):
     id = models.AutoField(primary_key=True)
+    active = models.BooleanField(default=True, db_index=True)
     created = models.DateTimeField(auto_now=True, editable=True, db_index=True)
     chamber = models.CharField(max_length=200, db_index=True)
     districtnumber = models.IntegerField(default=0, db_index=True)
@@ -61,6 +68,15 @@ class Legislator(Person):
             'youtube': self.youtube,
             'chamber': self.chamber,
         }
+
+
+class API(models.Model):
+    id = models.AutoField(primary_key=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+
 
 
 # class Sheriff(Person):
