@@ -8,7 +8,7 @@ class Person(models.Model):
     personalEmail = models.CharField(
         max_length=200, blank=True, null=True, db_index=True
     )
-    homePhone = models.CharField(max_length=200, blank=True, null=True)
+    personalPhone = models.CharField(max_length=200, blank=True, null=True)
     mobile = models.CharField(max_length=200, blank=True, null=True)
     photoURL = models.CharField(max_length=200, blank=True, null=True)
     gender = models.CharField(max_length=200, blank=True, null=True)
@@ -138,3 +138,6 @@ class SoSElectedOfficial(Person):
     candidateName = models.CharField(
         max_length=200, blank=True, null=True, db_index=True
     )
+
+    def __str__(self):
+        return f"{self.first_name} {self.last_name}"

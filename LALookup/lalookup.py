@@ -158,11 +158,11 @@ def loadElectedOfficials(filename):
                 party=party,
                 gender=gender,
                 ethnicity=ethnicity,
-                email=email,
+                #personalEmail=email,
                 officeDescription=officeDescription,
                 officeLevel=office_level,
                 # expirationDate=exp_date,
                 parish=parish,
                 officePhone=officePhone,
-                phone=phone,
+                personalPhone=phone,
             )
