@@ -12,7 +12,7 @@ def latlon2Parish(lat, lon):
     try:
         geolocator = Nominatim(user_agent="LALookup")
         location = geolocator.reverse(f"{lat}, {lon}")
-        return location.raw['address']['county']
+        return location.raw["address"]["county"]
     except Exception as e:
         traceback.print_exc()
         return None
@@ -33,7 +33,7 @@ def within_shape(df, shapes):
 
 def findShapeIndex(lat, lon, shape):
     for i in range(0, len(shape.geometry)):
-        if (shape.geometry[i].contains(Point(lon, lat))):
+        if shape.geometry[i].contains(Point(lon, lat)):
             return i
 
 
@@ -51,8 +51,12 @@ def getSenateDistrict(lat, lon):
 
 def getStateLegislators(lat, lon):
     try:
-        rep = Legislator.objects.get(districtnumber=getHouseDistrict(lat, lon), chamber="House")
-        sen = Legislator.objects.get(districtnumber=getSenateDistrict(lat, lon), chamber="Senate")
+        rep = Legislator.objects.get(
+            districtnumber=getHouseDistrict(lat, lon), chamber="House"
+        )
+        sen = Legislator.objects.get(
+            districtnumber=getSenateDistrict(lat, lon), chamber="Senate"
+        )
         return [rep.todict(), sen.todict()]
     except Legislator.DoesNotExist as e:
         print("ERROR: Legislator not found {e}")
@@ -67,15 +71,15 @@ def getMemberURL(chamber, member_id):
 
 
 def loadLegislators(filename, chamber):
-    with open(filename, newline='') as csvfile:
+    with open(filename, newline="") as csvfile:
         reader = csv.DictReader(csvfile)
         for row in reader:
-            first_name = row['first_name']
-            last_name = row['last_name']
-            fullname = row['fullname']
-            districtnumber = row['districtnumber']
-            phone = row['districtofficephone']
-            officeEmail = row['emailaddresspublic']
+            first_name = row["first_name"]
+            last_name = row["last_name"]
+            fullname = row["fullname"]
+            districtnumber = row["districtnumber"]
+            phone = row["districtofficephone"]
+            officeEmail = row["emailaddresspublic"]
 
             print(f"{first_name} {last_name} {phone} {officeEmail}")
             obj, created = Legislator.objects.update_or_create(
@@ -94,10 +98,10 @@ def splitName(fullname):
     try:
         parts = fullname.split()
         lastname = parts[-1]
-        firstname = ' '.join(parts[:-1])
+        firstname = " ".join(parts[:-1])
         return firstname, lastname
     except:
-        return '', ''
+        return "", ""
 
 
 def updateLegislatorParty():
@@ -105,12 +109,14 @@ def updateLegislatorParty():
         try:
             # todo #fixme this isn't a great search
             # todo #fixme there can be more than one office title
-            sos = (SoSElectedOfficial.objects.filter(
-                first_name=L.first_name,
-                last_name=L.last_name)
-                   .exclude(officeTitle='DSCC Member')
-                   .exclude(officeTitle='RSCC Member')
-                   .first())
+            sos = (
+                SoSElectedOfficial.objects.filter(
+                    first_name=L.first_name, last_name=L.last_name
+                )
+                .exclude(officeTitle="DSCC Member")
+                .exclude(officeTitle="RSCC Member")
+                .first()
+            )
 
             print(f"{L.first_name} {L.last_name} {sos.party}")
             L.party = sos.party
@@ -124,25 +130,27 @@ def updateLegislatorParty():
 
 def loadElectedOfficials(filename):
     print(f"loading {filename}")
-    with open(filename, newline='') as csvfile:
+    with open(filename, newline="") as csvfile:
         reader = csv.DictReader(csvfile)
         for row in reader:
             # print(dict(row))
-            officeTitle = row['Office Title'].strip()
-            officeDescription = row['Office Description']
-            candidateName = row['Candidate Name']
+            officeTitle = row["Office Title"].strip()
+            officeDescription = row["Office Description"]
+            candidateName = row["Candidate Name"]
             first_name, last_name = splitName(candidateName)
-            officePhone = row['Office Phone']
-            phone = row['Phone']
-            ethnicity = row['Ethnicity']
-            gender = row['Sex']
-            party = row['Party Code']
-            office_level = row['Office Level']
+            officePhone = row["Office Phone"]
+            phone = row["Phone"]
+            ethnicity = row["Ethnicity"]
+            gender = row["Sex"]
+            party = row["Party Code"]
+            office_level = row["Office Level"]
             # exp_date = row['Expiration Date']
-            comm_date = row['Commissioned Date']
-            parish = row['Parish']
-            email = row['Email']
-            print(f"{officeTitle} {first_name} {last_name} {phone} {email} {party} {gender}")
+            comm_date = row["Commissioned Date"]
+            parish = row["Parish"]
+            email = row["Email"]
+            print(
+                f"{officeTitle} {first_name} {last_name} {phone} {email} {party} {gender}"
+            )
             obj, created = SoSElectedOfficial.objects.update_or_create(
                 officeTitle=officeTitle,
                 first_name=first_name,

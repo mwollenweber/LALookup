@@ -6,63 +6,71 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('LALookup', '0001_initial'),
+        ("LALookup", "0001_initial"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='legislator',
-            name='active',
+            model_name="legislator",
+            name="active",
             field=models.BooleanField(db_index=True, default=True),
         ),
         migrations.AlterField(
-            model_name='legislator',
-            name='chamber',
+            model_name="legislator",
+            name="chamber",
             field=models.CharField(db_index=True, max_length=200),
         ),
         migrations.AlterField(
-            model_name='legislator',
-            name='created',
+            model_name="legislator",
+            name="created",
             field=models.DateTimeField(auto_now=True, db_index=True),
         ),
         migrations.AlterField(
-            model_name='legislator',
-            name='districtnumber',
+            model_name="legislator",
+            name="districtnumber",
             field=models.IntegerField(db_index=True, default=0),
         ),
         migrations.AlterField(
-            model_name='legislator',
-            name='email',
-            field=models.CharField(blank=True, db_index=True, max_length=200, null=True),
+            model_name="legislator",
+            name="email",
+            field=models.CharField(
+                blank=True, db_index=True, max_length=200, null=True
+            ),
         ),
         migrations.AlterField(
-            model_name='legislator',
-            name='first_name',
+            model_name="legislator",
+            name="first_name",
             field=models.CharField(db_index=True, max_length=200),
         ),
         migrations.AlterField(
-            model_name='legislator',
-            name='last_name',
+            model_name="legislator",
+            name="last_name",
             field=models.CharField(db_index=True, max_length=200),
         ),
         migrations.AlterField(
-            model_name='legislator',
-            name='officePhone',
-            field=models.CharField(blank=True, db_index=True, max_length=200, null=True),
+            model_name="legislator",
+            name="officePhone",
+            field=models.CharField(
+                blank=True, db_index=True, max_length=200, null=True
+            ),
         ),
         migrations.AlterField(
-            model_name='legislator',
-            name='officeaddress',
-            field=models.CharField(blank=True, db_index=True, max_length=200, null=True),
+            model_name="legislator",
+            name="officeaddress",
+            field=models.CharField(
+                blank=True, db_index=True, max_length=200, null=True
+            ),
         ),
         migrations.AlterField(
-            model_name='legislator',
-            name='party',
-            field=models.CharField(blank=True, db_index=True, max_length=200, null=True),
+            model_name="legislator",
+            name="party",
+            field=models.CharField(
+                blank=True, db_index=True, max_length=200, null=True
+            ),
         ),
         migrations.AlterField(
-            model_name='legislator',
-            name='updated',
+            model_name="legislator",
+            name="updated",
             field=models.DateTimeField(auto_now=True, db_index=True),
         ),
     ]

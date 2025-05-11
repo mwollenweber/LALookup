@@ -1,13 +1,13 @@
 from django.db import models
 
 
-
-
 class Person(models.Model):
     first_name = models.CharField(max_length=200, db_index=True)
     last_name = models.CharField(max_length=200, db_index=True)
     fullname = models.CharField(max_length=200, blank=True, null=True)
-    personalEmail = models.CharField(max_length=200, blank=True, null=True, db_index=True)
+    personalEmail = models.CharField(
+        max_length=200, blank=True, null=True, db_index=True
+    )
     homePhone = models.CharField(max_length=200, blank=True, null=True)
     mobile = models.CharField(max_length=200, blank=True, null=True)
     photoURL = models.CharField(max_length=200, blank=True, null=True)
@@ -30,6 +30,7 @@ class Person(models.Model):
     class Meta:
         abstract = True
 
+
 class User(Person):
     id = models.AutoField(primary_key=True)
     active = models.BooleanField(default=True, db_index=True)
@@ -42,7 +43,9 @@ class Legislator(Person):
     created = models.DateTimeField(auto_now=True, editable=True, db_index=True)
     chamber = models.CharField(max_length=200, db_index=True)
     districtnumber = models.IntegerField(default=0, db_index=True)
-    officeaddress = models.CharField(max_length=200, blank=True, null=True, db_index=True)
+    officeaddress = models.CharField(
+        max_length=200, blank=True, null=True, db_index=True
+    )
     officePhone = models.CharField(max_length=200, blank=True, null=True, db_index=True)
     officeEmail = models.CharField(max_length=200, blank=True, null=True, db_index=True)
     officeURL = models.CharField(max_length=200, blank=True, null=True, db_index=True)
@@ -53,21 +56,21 @@ class Legislator(Person):
 
     def todict(self):
         return {
-            'office_title': self.officeTitle,
-            'first_name': self.first_name,
-            'last_name': self.last_name,
-            'email': self.officeEmail,
-            'office_phone': self.officePhone,
-            'office_url': self.officeURL,
-            'district': self.districtnumber,
-            'party': self.party,
-            'gender': self.gender,
-            'twitter': self.twitter,
-            'facebook': self.facebook,
-            'instagram': self.instagram,
-            'campaign_url': '',
-            'youtube': self.youtube,
-            'chamber': self.chamber,
+            "office_title": self.officeTitle,
+            "first_name": self.first_name,
+            "last_name": self.last_name,
+            "email": self.officeEmail,
+            "office_phone": self.officePhone,
+            "office_url": self.officeURL,
+            "district": self.districtnumber,
+            "party": self.party,
+            "gender": self.gender,
+            "twitter": self.twitter,
+            "facebook": self.facebook,
+            "instagram": self.instagram,
+            "campaign_url": "",
+            "youtube": self.youtube,
+            "chamber": self.chamber,
         }
 
 
@@ -76,8 +79,6 @@ class API(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
-
 
 
 # class Sheriff(Person):
@@ -102,18 +103,38 @@ class API(models.Model):
 class SoSElectedOfficial(Person):
     id = models.AutoField(primary_key=True)
     officeTitle = models.CharField(max_length=200, blank=True, null=True, db_index=True)
-    officeDescription = models.CharField(max_length=200, blank=True, null=True, db_index=True)
-    officeAddress1 = models.CharField(max_length=200, blank=True, null=True, db_index=True)
-    officeAddress2 = models.CharField(max_length=200, blank=True, null=True, db_index=True)
+    officeDescription = models.CharField(
+        max_length=200, blank=True, null=True, db_index=True
+    )
+    officeAddress1 = models.CharField(
+        max_length=200, blank=True, null=True, db_index=True
+    )
+    officeAddress2 = models.CharField(
+        max_length=200, blank=True, null=True, db_index=True
+    )
     officeCity = models.CharField(max_length=200, blank=True, null=True, db_index=True)
     officeZip = models.CharField(max_length=200, blank=True, null=True, db_index=True)
     officePhone = models.CharField(max_length=200, blank=True, null=True, db_index=True)
     officeEmail = models.CharField(max_length=200, blank=True, null=True, db_index=True)
-    candidateAddress1 = models.CharField(max_length=200, blank=True, null=True, db_index=True)
-    candidateAddress2 = models.CharField(max_length=200, blank=True, null=True, db_index=True)
-    candidateCity = models.CharField(max_length=200, blank=True, null=True, db_index=True)
-    candidateZip = models.CharField(max_length=200, blank=True, null=True, db_index=True)
-    commissionedDate = models.DateTimeField(editable=True, db_index=True, blank=True, null=True)
-    expirationDate = models.DateTimeField(editable=True, db_index=True, blank=True, null=True)
+    candidateAddress1 = models.CharField(
+        max_length=200, blank=True, null=True, db_index=True
+    )
+    candidateAddress2 = models.CharField(
+        max_length=200, blank=True, null=True, db_index=True
+    )
+    candidateCity = models.CharField(
+        max_length=200, blank=True, null=True, db_index=True
+    )
+    candidateZip = models.CharField(
+        max_length=200, blank=True, null=True, db_index=True
+    )
+    commissionedDate = models.DateTimeField(
+        editable=True, db_index=True, blank=True, null=True
+    )
+    expirationDate = models.DateTimeField(
+        editable=True, db_index=True, blank=True, null=True
+    )
     officeLevel = models.IntegerField(default=0, db_index=True)
-    candidateName = models.CharField(max_length=200, blank=True, null=True, db_index=True)
+    candidateName = models.CharField(
+        max_length=200, blank=True, null=True, db_index=True
+    )

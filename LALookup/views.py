@@ -17,66 +17,66 @@ def index(request):
 
 @require_http_methods(["GET", "POST"])
 def addressSearch(request):
-    if request.method == 'GET':
-        template = loader.get_template('search.html')
+    if request.method == "GET":
+        template = loader.get_template("search.html")
         context = {}
         return HttpResponse(template.render(context, request))
 
-    elif request.method == 'POST':
+    elif request.method == "POST":
         print('Raw Data: "%s"' % request.body)
-        if request.content_type == 'application/json':
+        if request.content_type == "application/json":
             try:
                 data = json.loads(request.body)
-                address = data['address']
+                address = data["address"]
                 if len(address) > 10:
                     lat, lon = address2latlon(address)
                 else:
-                    lat = data['lat']
-                    lon = data['lon']
+                    lat = data["lat"]
+                    lon = data["lon"]
 
                 r = {
-                    'status': 'success',
-                    'address': address,
-                    'lat': lat,
-                    'long': lon,
-                    'parish': latlon2Parish(lat, lon),
-                    'results': getStateLegislators(lat, lon),
+                    "status": "success",
+                    "address": address,
+                    "lat": lat,
+                    "long": lon,
+                    "parish": latlon2Parish(lat, lon),
+                    "results": getStateLegislators(lat, lon),
                     #'count': len(results),
                 }
                 return JsonResponse(r)
 
             except json.JSONDecodeError as e:
                 traceback.print_exc()
-                return JsonResponse({'error': 'Invalid JSON'})
+                return JsonResponse({"error": "Invalid JSON"})
 
             except KeyError as e:
                 traceback.print_exc()
-                return JsonResponse({'error': 'An error occurred'})
+                return JsonResponse({"error": "An error occurred"})
 
             except Exception as e:
                 traceback.print_exc()
-                return JsonResponse({'error': 'An error occurred'})
-        else: #not json
+                return JsonResponse({"error": "An error occurred"})
+        else:  # not json
             try:
-                address = request.POST['address']
+                address = request.POST["address"]
                 if len(address) > 10:
                     lat, lon = address2latlon(address)
                 else:
-                    lat = request.POST['lat']
-                    lon = request.POST['lon']
+                    lat = request.POST["lat"]
+                    lon = request.POST["lon"]
 
                 r = {
-                    'status': 'success',
-                    'address': address,
-                    'lat': lat,
-                    'long': lon,
-                    'parish': latlon2Parish(lat, lon),
-                    'results': getStateLegislators(lat, lon)
+                    "status": "success",
+                    "address": address,
+                    "lat": lat,
+                    "long": lon,
+                    "parish": latlon2Parish(lat, lon),
+                    "results": getStateLegislators(lat, lon),
                 }
 
-                #fixme -- shouldn't return json
-                #should be some type of formatted response
-                #https://getbootstrap.com/docs/4.3/components/card/
+                # fixme -- shouldn't return json
+                # should be some type of formatted response
+                # https://getbootstrap.com/docs/4.3/components/card/
                 print("HERE HERE HERE")
                 return HttpResponse(str(r))
 
@@ -89,12 +89,12 @@ def test(request):
     address = "4521 Magazine St, 70115"
     lat, lon = address2latlon(address)
     r = {
-        'status': 'success',
-        'address': address,
-        'lat': lat,
-        'long': lon,
-        'parish': latlon2Parish(lat, lon),
-        'results': getStateLegislators(lat, lon)
+        "status": "success",
+        "address": address,
+        "lat": lat,
+        "long": lon,
+        "parish": latlon2Parish(lat, lon),
+        "results": getStateLegislators(lat, lon),
     }
     return JsonResponse(r)
 
@@ -104,19 +104,17 @@ def LookupStateLegislators(request):
 
 
 def renderResposne(request, response=None):
-    if response and response.has_key('results'):
-        results = response['results']
+    if response and response.has_key("results"):
+        results = response["results"]
         print(results)
     else:
-        print('No results')
+        print("No results")
         results = None
 
     print(request.body)
     print('Raw Data: "%s"' % request.body)
-    template = loader.get_template('contact.html')
+    template = loader.get_template("contact.html")
     context = {
-        'results': results,
+        "results": results,
     }
     return HttpResponse(template.render(context, request))
-
-
