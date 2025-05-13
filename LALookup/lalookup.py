@@ -1,11 +1,15 @@
 import traceback
 import geopandas as gp
 import csv
+import logging
 from shapely.geometry import Point
 from pygris.geocode import geocode
 from django.conf import settings
 from geopy.geocoders import Nominatim
 from .models import Legislator, SoSElectedOfficial
+
+
+logger = logging.getLogger(__name__)
 
 
 def latlon2Parish(lat, lon):
@@ -81,7 +85,7 @@ def loadLegislators(filename, chamber):
             phone = row["districtofficephone"]
             officeEmail = row["emailaddresspublic"]
 
-            print(f"{first_name} {last_name} {phone} {officeEmail}")
+            logger.debug(f"{first_name} {last_name} {phone} {officeEmail}")
             obj, created = Legislator.objects.update_or_create(
                 first_name=first_name,
                 last_name=last_name,
@@ -118,18 +122,18 @@ def updateLegislatorParty():
                 .first()
             )
 
-            print(f"{L.first_name} {L.last_name} {sos.party}")
+            logger.debug(f"{L.first_name} {L.last_name} {sos.party}")
             L.party = sos.party
             L.gender = sos.gender
             # L.parish = sos.parish
             L.officeTitle = sos.officeTitle
             L.save()
         except Exception as e:
-            print(f"ERROR: {e}")
+            logger.error(f"ERROR: {e}")
 
 
 def loadElectedOfficials(filename):
-    print(f"loading {filename}")
+    logger.info(f"loading {filename}")
     with open(filename, newline="") as csvfile:
         reader = csv.DictReader(csvfile)
         for row in reader:
@@ -148,7 +152,7 @@ def loadElectedOfficials(filename):
             comm_date = row["Commissioned Date"]
             parish = row["Parish"]
             email = row["Email"]
-            print(
+            logger.debug(
                 f"{officeTitle} {first_name} {last_name} {phone} {email} {party} {gender}"
             )
             obj, created = SoSElectedOfficial.objects.update_or_create(

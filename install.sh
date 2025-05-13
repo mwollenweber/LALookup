@@ -35,9 +35,9 @@ mkdir ./tmp
 virtualenv env
 source env/bin/activate
 pip install -r requirements.txt
+source config.rc
 python manage.py makemigrations
 python manage.py migrate
 echo "Create a Super User"
 python manage.py createsuperuser
 echo "Install Complete"
-
