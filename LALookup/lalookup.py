@@ -63,7 +63,7 @@ def getStateLegislators(lat, lon):
         )
         return [rep.todict(), sen.todict()]
     except Legislator.DoesNotExist as e:
-        print("ERROR: Legislator not found {e}")
+        logger.error("ERROR: Legislator not found {e}")
         return None
 
 
@@ -137,7 +137,7 @@ def loadElectedOfficials(filename):
     with open(filename, newline="") as csvfile:
         reader = csv.DictReader(csvfile)
         for row in reader:
-            # print(dict(row))
+            logger.debug(dict(row))
             officeTitle = row["Office Title"].strip()
             officeDescription = row["Office Description"]
             candidateName = row["Candidate Name"]

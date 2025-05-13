@@ -8,11 +8,21 @@ from django.urls import path
 from LALookup import views
 
 urlpatterns = [
+    #index
     path("", views.index),
-    path("api/test", views.test),
-    path("api/addressSearch", views.addressSearch),
+
+    #WEB
     path("contact", views.renderResposne),
+    path("callMyRep", views.callMyRep),
     path("stateLegislators", views.LookupStateLegislators),
     path("locateMe", views.locateMe),
+    path("test", views.test),
+
+
+    #API
+    path("api/test", views.apitest),
+    path("api/addressSearch", views.addressSearch),
+
+    #admin
     path("admin/", admin.site.urls),
 ]

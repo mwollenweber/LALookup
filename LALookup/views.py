@@ -19,6 +19,8 @@ def index(request):
     return HttpResponse("Hello, world. You're at the LALookup index.")
 
 
+
+
 @require_http_methods( ["POST"])
 def addressSearch(request):
     try:
@@ -53,7 +55,36 @@ def locateMe(request):
     return HttpResponse(template.render(context, request))
 
 
-def test(request):
+@require_http_methods(["GET"])
+def callMyRep(request):
+    template = loader.get_template("search.html")
+    context = {}
+    return HttpResponse(template.render(context, request))
+
+
+@require_http_methods(["GET"])
+def emailMyRep(request):
+    template = loader.get_template("search.html")
+    context = {}
+    return HttpResponse(template.render(context, request))
+
+
+@require_http_methods(["GET"])
+def callMySenator(request):
+    template = loader.get_template("search.html")
+    context = {}
+    return HttpResponse(template.render(context, request))
+
+
+@require_http_methods(["GET"])
+def emailMySenator(request):
+    template = loader.get_template("search.html")
+    context = {}
+    return HttpResponse(template.render(context, request))
+
+
+
+def apitest(request):
     address = "4521 Magazine St, 70115"
     lat, lon = address2latlon(address)
     r = {
@@ -67,6 +98,18 @@ def test(request):
     return JsonResponse(r)
 
 
+def test(request):
+    address = "4521 Magazine St, 70115"
+    lat, lon = address2latlon(address)
+    results = getStateLegislators(lat, lon)
+    logger.info(f"render body: {request.body}")
+    template = loader.get_template("contact.html")
+    context = {
+        "results": results,
+    }
+    return HttpResponse(template.render(context, request))
+
+
 def LookupStateLegislators(request):
     addressSearch(request)
 
@@ -77,7 +120,9 @@ def renderResposne(request, response=None):
         logger.info(f"render results: {results}")
     else:
         print("No results")
-        results = None
+        address = "4521 Magazine St, 70115"
+        lat, lon = address2latlon(address)
+        results = getStateLegislators(lat, lon)
 
     logger.info(f"render body: {request.body}")
     template = loader.get_template("contact.html")
@@ -85,3 +130,5 @@ def renderResposne(request, response=None):
         "results": results,
     }
     return HttpResponse(template.render(context, request))
+
+

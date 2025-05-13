@@ -6,15 +6,16 @@
             <div class="card" style="width: 18rem;" >
               <!-- <img src="placeholder-headshot.png " class="card-img-top" alt="placeholder"> -->
               <div class="card-body">
-                <h5 class="card-title"> {{ first_name }} {{ last_name }}</h5>
-                <p class="card-text"> {{ office_title }} in the {{ district }} district </p>
+                <h5 class="card-title"> {{ result.first_name }} {{ result.last_name }}</h5>
+                <p class="card-text"> {{ result.office_title }} in the {{ result.district }} district </p>
               </div>
               <ul class="list-group list-group-flush">
-                <li class="list-group-item"><i class="bi bi-mailbox"> <a href="mailto:example@test.com"> example@test.com</a> </i> </li>
-                  <li class="list-group-item"><i class="bi bi-telephone"> <a href="tel:504-555-5555">504-555-5555</a> </i> </li>
-                  <li class="list-group-item"><i class="bi bi-link"> <a href="">Offical Website</a> </i> </li>
+                <li class="list-group-item"><i class="bi bi-mailbox"> <a href="mailto:{{ result.email }}"> {{ result.email }}</a> </i> </li>
+                  <li class="list-group-item"><i class="bi bi-telephone"> <a href="tel:{{ result.office_phone }}">{{  result.office_phone}}</a> </i> </li>
+                  <li class="list-group-item"><i class="bi bi-link"> <a href="{{ result.office_url }}">Website</a> </i> </li>
               </ul>
             </div> <!-- card -->
+            <br>
         {% endfor %}
     </div> <!-- results -->
 {% endblock content %}
