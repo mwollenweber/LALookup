@@ -6,77 +6,164 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('LALookup', '0002_alter_legislator_active_alter_legislator_chamber_and_more'),
+        ("LALookup", "0002_alter_legislator_active_alter_legislator_chamber_and_more"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='SoSElectedOfficial',
+            name="SoSElectedOfficial",
             fields=[
-                ('id', models.AutoField(primary_key=True, serialize=False)),
-                ('created', models.DateTimeField(auto_now=True, db_index=True)),
-                ('officeTitle', models.CharField(blank=True, db_index=True, max_length=200, null=True)),
-                ('officeDescription', models.CharField(blank=True, db_index=True, max_length=200, null=True)),
-                ('officeAddress1', models.CharField(blank=True, db_index=True, max_length=200, null=True)),
-                ('officeAddress2', models.CharField(blank=True, db_index=True, max_length=200, null=True)),
-                ('officeCity', models.CharField(blank=True, db_index=True, max_length=200, null=True)),
-                ('officeZip', models.CharField(blank=True, db_index=True, max_length=200, null=True)),
-                ('officePhone', models.CharField(blank=True, db_index=True, max_length=200, null=True)),
-                ('officeParish', models.CharField(blank=True, db_index=True, max_length=200, null=True)),
-                ('candidateAddress1', models.CharField(blank=True, db_index=True, max_length=200, null=True)),
-                ('candidateAddress2', models.CharField(blank=True, db_index=True, max_length=200, null=True)),
-                ('candidateCity', models.CharField(blank=True, db_index=True, max_length=200, null=True)),
-                ('candidateZip', models.CharField(blank=True, db_index=True, max_length=200, null=True)),
-                ('ethnicity', models.CharField(blank=True, db_index=True, max_length=200, null=True)),
-                ('gender', models.CharField(blank=True, db_index=True, max_length=200, null=True)),
-                ('party', models.CharField(blank=True, db_index=True, max_length=200, null=True)),
-                ('email', models.CharField(blank=True, db_index=True, max_length=200, null=True)),
-                ('commission_date', models.DateTimeField(db_index=True)),
-                ('expiration_date', models.DateTimeField(db_index=True)),
-                ('office_level', models.IntegerField(db_index=True, default=0)),
-                ('candidateName', models.CharField(blank=True, db_index=True, max_length=200, null=True)),
-                ('first_name', models.CharField(db_index=True, max_length=200)),
-                ('last_name', models.CharField(db_index=True, max_length=200)),
+                ("id", models.AutoField(primary_key=True, serialize=False)),
+                ("created", models.DateTimeField(auto_now=True, db_index=True)),
+                (
+                    "officeTitle",
+                    models.CharField(
+                        blank=True, db_index=True, max_length=200, null=True
+                    ),
+                ),
+                (
+                    "officeDescription",
+                    models.CharField(
+                        blank=True, db_index=True, max_length=200, null=True
+                    ),
+                ),
+                (
+                    "officeAddress1",
+                    models.CharField(
+                        blank=True, db_index=True, max_length=200, null=True
+                    ),
+                ),
+                (
+                    "officeAddress2",
+                    models.CharField(
+                        blank=True, db_index=True, max_length=200, null=True
+                    ),
+                ),
+                (
+                    "officeCity",
+                    models.CharField(
+                        blank=True, db_index=True, max_length=200, null=True
+                    ),
+                ),
+                (
+                    "officeZip",
+                    models.CharField(
+                        blank=True, db_index=True, max_length=200, null=True
+                    ),
+                ),
+                (
+                    "officePhone",
+                    models.CharField(
+                        blank=True, db_index=True, max_length=200, null=True
+                    ),
+                ),
+                (
+                    "officeParish",
+                    models.CharField(
+                        blank=True, db_index=True, max_length=200, null=True
+                    ),
+                ),
+                (
+                    "candidateAddress1",
+                    models.CharField(
+                        blank=True, db_index=True, max_length=200, null=True
+                    ),
+                ),
+                (
+                    "candidateAddress2",
+                    models.CharField(
+                        blank=True, db_index=True, max_length=200, null=True
+                    ),
+                ),
+                (
+                    "candidateCity",
+                    models.CharField(
+                        blank=True, db_index=True, max_length=200, null=True
+                    ),
+                ),
+                (
+                    "candidateZip",
+                    models.CharField(
+                        blank=True, db_index=True, max_length=200, null=True
+                    ),
+                ),
+                (
+                    "ethnicity",
+                    models.CharField(
+                        blank=True, db_index=True, max_length=200, null=True
+                    ),
+                ),
+                (
+                    "gender",
+                    models.CharField(
+                        blank=True, db_index=True, max_length=200, null=True
+                    ),
+                ),
+                (
+                    "party",
+                    models.CharField(
+                        blank=True, db_index=True, max_length=200, null=True
+                    ),
+                ),
+                (
+                    "email",
+                    models.CharField(
+                        blank=True, db_index=True, max_length=200, null=True
+                    ),
+                ),
+                ("commission_date", models.DateTimeField(db_index=True)),
+                ("expiration_date", models.DateTimeField(db_index=True)),
+                ("office_level", models.IntegerField(db_index=True, default=0)),
+                (
+                    "candidateName",
+                    models.CharField(
+                        blank=True, db_index=True, max_length=200, null=True
+                    ),
+                ),
+                ("first_name", models.CharField(db_index=True, max_length=200)),
+                ("last_name", models.CharField(db_index=True, max_length=200)),
             ],
         ),
         migrations.RenameField(
-            model_name='legislator',
-            old_name='email',
-            new_name='officeEmail',
+            model_name="legislator",
+            old_name="email",
+            new_name="officeEmail",
         ),
         migrations.AddField(
-            model_name='legislator',
-            name='facebook',
+            model_name="legislator",
+            name="facebook",
             field=models.CharField(blank=True, max_length=200, null=True),
         ),
         migrations.AddField(
-            model_name='legislator',
-            name='instagram',
+            model_name="legislator",
+            name="instagram",
             field=models.CharField(blank=True, max_length=200, null=True),
         ),
         migrations.AddField(
-            model_name='legislator',
-            name='linkedin',
+            model_name="legislator",
+            name="linkedin",
             field=models.CharField(blank=True, max_length=200, null=True),
         ),
         migrations.AddField(
-            model_name='legislator',
-            name='personalEmail',
-            field=models.CharField(blank=True, db_index=True, max_length=200, null=True),
+            model_name="legislator",
+            name="personalEmail",
+            field=models.CharField(
+                blank=True, db_index=True, max_length=200, null=True
+            ),
         ),
         migrations.AddField(
-            model_name='legislator',
-            name='twitter',
+            model_name="legislator",
+            name="twitter",
             field=models.CharField(blank=True, max_length=200, null=True),
         ),
         migrations.AddField(
-            model_name='legislator',
-            name='website',
+            model_name="legislator",
+            name="website",
             field=models.CharField(blank=True, max_length=200, null=True),
         ),
         migrations.AddField(
-            model_name='legislator',
-            name='youtube',
+            model_name="legislator",
+            name="youtube",
             field=models.CharField(blank=True, max_length=200, null=True),
         ),
     ]

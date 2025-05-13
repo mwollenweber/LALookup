@@ -6,23 +6,26 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('LALookup', '0006_rename_commission_date_soselectedofficial_commissioned_date'),
+        (
+            "LALookup",
+            "0006_rename_commission_date_soselectedofficial_commissioned_date",
+        ),
     ]
 
     operations = [
         migrations.RenameField(
-            model_name='soselectedofficial',
-            old_name='commissioned_date',
-            new_name='commissionedDate',
+            model_name="soselectedofficial",
+            old_name="commissioned_date",
+            new_name="commissionedDate",
         ),
         migrations.RenameField(
-            model_name='soselectedofficial',
-            old_name='expiration_date',
-            new_name='expirationDate',
+            model_name="soselectedofficial",
+            old_name="expiration_date",
+            new_name="expirationDate",
         ),
         migrations.RenameField(
-            model_name='soselectedofficial',
-            old_name='office_level',
-            new_name='officeLevel',
+            model_name="soselectedofficial",
+            old_name="office_level",
+            new_name="officeLevel",
         ),
     ]

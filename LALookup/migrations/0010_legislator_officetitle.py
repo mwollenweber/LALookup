@@ -6,13 +6,15 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('LALookup', '0009_legislator_officeurl'),
+        ("LALookup", "0009_legislator_officeurl"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='legislator',
-            name='officeTitle',
-            field=models.CharField(blank=True, db_index=True, max_length=200, null=True),
+            model_name="legislator",
+            name="officeTitle",
+            field=models.CharField(
+                blank=True, db_index=True, max_length=200, null=True
+            ),
         ),
     ]

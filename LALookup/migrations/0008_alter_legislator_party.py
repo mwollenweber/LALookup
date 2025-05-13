@@ -6,13 +6,16 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('LALookup', '0007_rename_commissioned_date_soselectedofficial_commissioneddate_and_more'),
+        (
+            "LALookup",
+            "0007_rename_commissioned_date_soselectedofficial_commissioneddate_and_more",
+        ),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='legislator',
-            name='party',
-            field=models.CharField(blank='U', db_index=True, max_length=200, null=True),
+            model_name="legislator",
+            name="party",
+            field=models.CharField(blank="U", db_index=True, max_length=200, null=True),
         ),
     ]

@@ -7,34 +7,39 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Legislator',
+            name="Legislator",
             fields=[
-                ('first_name', models.CharField(max_length=200)),
-                ('last_name', models.CharField(max_length=200)),
-                ('fullname', models.CharField(blank=True, max_length=200, null=True)),
-                ('active', models.BooleanField(default=True)),
-                ('email', models.CharField(blank=True, max_length=200, null=True)),
-                ('homePhone', models.CharField(blank=True, max_length=200, null=True)),
-                ('mobile', models.CharField(blank=True, max_length=200, null=True)),
-                ('status', models.CharField(blank=True, max_length=200, null=True)),
-                ('photoURL', models.CharField(blank=True, max_length=200, null=True)),
-                ('gender', models.CharField(blank=True, max_length=200, null=True)),
-                ('party', models.CharField(blank=True, max_length=200, null=True)),
-                ('updated', models.DateTimeField(auto_now=True)),
-                ('id', models.AutoField(primary_key=True, serialize=False)),
-                ('created', models.DateTimeField(auto_now=True)),
-                ('chamber', models.CharField(default='house', max_length=200)),
-                ('districtnumber', models.IntegerField(default=0)),
-                ('officeaddress', models.CharField(blank=True, max_length=200, null=True)),
-                ('officePhone', models.CharField(blank=True, max_length=200, null=True)),
+                ("first_name", models.CharField(max_length=200)),
+                ("last_name", models.CharField(max_length=200)),
+                ("fullname", models.CharField(blank=True, max_length=200, null=True)),
+                ("active", models.BooleanField(default=True)),
+                ("email", models.CharField(blank=True, max_length=200, null=True)),
+                ("homePhone", models.CharField(blank=True, max_length=200, null=True)),
+                ("mobile", models.CharField(blank=True, max_length=200, null=True)),
+                ("status", models.CharField(blank=True, max_length=200, null=True)),
+                ("photoURL", models.CharField(blank=True, max_length=200, null=True)),
+                ("gender", models.CharField(blank=True, max_length=200, null=True)),
+                ("party", models.CharField(blank=True, max_length=200, null=True)),
+                ("updated", models.DateTimeField(auto_now=True)),
+                ("id", models.AutoField(primary_key=True, serialize=False)),
+                ("created", models.DateTimeField(auto_now=True)),
+                ("chamber", models.CharField(default="house", max_length=200)),
+                ("districtnumber", models.IntegerField(default=0)),
+                (
+                    "officeaddress",
+                    models.CharField(blank=True, max_length=200, null=True),
+                ),
+                (
+                    "officePhone",
+                    models.CharField(blank=True, max_length=200, null=True),
+                ),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
         ),
     ]

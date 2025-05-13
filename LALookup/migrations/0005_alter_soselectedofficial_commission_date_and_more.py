@@ -6,18 +6,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('LALookup', '0004_rename_officeparish_soselectedofficial_parish_and_more'),
+        ("LALookup", "0004_rename_officeparish_soselectedofficial_parish_and_more"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='soselectedofficial',
-            name='commission_date',
+            model_name="soselectedofficial",
+            name="commission_date",
             field=models.DateTimeField(blank=True, db_index=True, null=True),
         ),
         migrations.AlterField(
-            model_name='soselectedofficial',
-            name='expiration_date',
+            model_name="soselectedofficial",
+            name="expiration_date",
             field=models.DateTimeField(blank=True, db_index=True, null=True),
         ),
     ]

@@ -10,5 +10,5 @@ def test():
 
 @app.task(name="loadLegislators")
 def runLoadLegislatorss():
-    loadLegislators(settings.HOUSEMEMBERS, 'House')
-    loadLegislators(settings.SENATEMEMBERS, 'Senate')
+    loadLegislators(settings.HOUSEMEMBERS, "House")
+    loadLegislators(settings.SENATEMEMBERS, "Senate")
