@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <script>
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(win, fail);
+            }
+    }
+
+    function win(position) {
+            //alert("success");
+            alert( position.coords.latitude );
+            alert( position.coords.longitude);
+    }
+
+    function fail() {
+      alert("Sorry, no position available.");
+    }
+        getLocation();
+    </script>
+
+{% endblock content %}

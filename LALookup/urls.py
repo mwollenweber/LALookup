@@ -16,8 +16,10 @@ urlpatterns = [
     path("callMyRep", views.callMyRep),
     path("emailMyRep", views.emailMyRep),
     path("stateLegislators", views.LookupStateLegislators),
+    path("searchMe", views.searchMe),
     path("locateMe", views.locateMe),
     path("test", views.test),
+    path("redirect", views.redirect),
 
 
     #API

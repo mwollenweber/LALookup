@@ -19,6 +19,13 @@ def index(request):
     return HttpResponse("Hello, world. You're at the LALookup index.")
 
 
+def redirect(request):
+    template = loader.get_template("redirect.html")
+    target_url = 'tel:504-952-6541'
+    context = {"target_url": target_url}
+    return HttpResponse(template.render(context, request))
+
+
 @require_http_methods( ["POST"])
 def addressSearch(request):
     try:
@@ -47,8 +54,15 @@ def addressSearch(request):
 
 
 @require_http_methods(["GET"])
-def locateMe(request):
+def searchMe(request):
     template = loader.get_template("search.html")
+    context = {}
+    return HttpResponse(template.render(context, request))
+
+
+@require_http_methods(["GET"])
+def locateMe(request):
+    template = loader.get_template("locateme.html")
     context = {}
     return HttpResponse(template.render(context, request))
 
@@ -63,7 +77,7 @@ def callMyRep(request):
 @require_http_methods(["GET"])
 def emailMyRep(request):
     print("emailMyRep")
-    template = loader.get_template("search.html")
+    template = loader.get_template("locateme.html")
 
     #test data
     address = "4521 Magazine St, 70115"
