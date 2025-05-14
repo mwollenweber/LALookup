@@ -3,7 +3,7 @@ import geopandas as gp
 import csv
 import logging
 from shapely.geometry import Point
-from pygris.geocode import geocode
+#from pygris.geocode import geocode
 from django.conf import settings
 from geopy.geocoders import Nominatim
 from .models import Legislator, SoSElectedOfficial
@@ -23,7 +23,12 @@ def latlon2Parish(lat, lon):
 
 
 def address2latlon(address):
-    gc = geocode(address)
+    #geocode uses https://geocoding.geo.census.gov/geocoder/Geocoding_Services_API.html
+    #outage 2025-MAY-14
+    #gc = geocode(address)
+
+    #Nominatim Uses OpenStreet Map
+    gc = Nominatim(user_agent="LALookup").geocode(address)
     return float(gc.latitude), float(gc.longitude)
 
 
@@ -53,18 +58,30 @@ def getSenateDistrict(lat, lon):
     return int(shape.SLDUST[index])
 
 
-def getStateLegislators(lat, lon):
+def getStateRep(lat, lon):
     try:
         rep = Legislator.objects.get(
             districtnumber=getHouseDistrict(lat, lon), chamber="House"
         )
+        return [rep.todict()]
+    except Legislator.DoesNotExist as e:
+        logger.error("ERROR: Rep not found {e}")
+        return None
+
+
+def getStateSenator(lat, lon):
+    try:
         sen = Legislator.objects.get(
             districtnumber=getSenateDistrict(lat, lon), chamber="Senate"
         )
-        return [rep.todict(), sen.todict()]
+        return [sen.todict()]
     except Legislator.DoesNotExist as e:
-        logger.error("ERROR: Legislator not found {e}")
+        logger.error("ERROR: Senator not found {e}")
         return None
+
+
+def getStateLegislators(lat, lon):
+    return getStateSenator(lat, lon) + getStateRep(lat, lon)
 
 
 def getMemberURL(chamber, member_id):
@@ -162,7 +179,7 @@ def loadElectedOfficials(filename):
                 party=party,
                 gender=gender,
                 ethnicity=ethnicity,
-                #personalEmail=email,
+                # personalEmail=email,
                 officeDescription=officeDescription,
                 officeLevel=office_level,
                 # expirationDate=exp_date,

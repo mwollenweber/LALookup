@@ -9,7 +9,7 @@ from django.utils.timezone import make_aware
 from django.views.decorators.http import require_http_methods
 from django.template import loader
 from django.conf import settings
-from .lalookup import address2latlon, getStateLegislators, latlon2Parish
+from .lalookup import address2latlon, getStateLegislators, latlon2Parish, getStateRep
 
 
 logger = logging.getLogger(__name__)
@@ -17,8 +17,6 @@ logger = logging.getLogger(__name__)
 
 def index(request):
     return HttpResponse("Hello, world. You're at the LALookup index.")
-
-
 
 
 @require_http_methods( ["POST"])
@@ -64,8 +62,18 @@ def callMyRep(request):
 
 @require_http_methods(["GET"])
 def emailMyRep(request):
+    print("emailMyRep")
     template = loader.get_template("search.html")
-    context = {}
+
+    #test data
+    address = "4521 Magazine St, 70115"
+    lat, lon = address2latlon(address)
+    results = getStateRep(lat, lon)
+    #results = getStateLegislators(lat, lon)
+    context = {
+        "results": results,
+    }
+    print("about to return")
     return HttpResponse(template.render(context, request))
 
 
@@ -86,7 +94,9 @@ def emailMySenator(request):
 
 def apitest(request):
     address = "4521 Magazine St, 70115"
+    print("about to lat lon")
     lat, lon = address2latlon(address)
+    print("lat lon")
     r = {
         "status": "success",
         "address": address,
@@ -114,15 +124,12 @@ def LookupStateLegislators(request):
     addressSearch(request)
 
 
+
+
 def renderResposne(request, response=None):
-    if response and response.has_key("results"):
-        results = response["results"]
-        logger.info(f"render results: {results}")
-    else:
-        print("No results")
-        address = "4521 Magazine St, 70115"
-        lat, lon = address2latlon(address)
-        results = getStateLegislators(lat, lon)
+    lat = request.POST["lat"]
+    lon = request.POST["lon"]
+    results = getStateLegislators(lat, lon)
 
     logger.info(f"render body: {request.body}")
     template = loader.get_template("contact.html")

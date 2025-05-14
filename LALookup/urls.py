@@ -14,6 +14,7 @@ urlpatterns = [
     #WEB
     path("contact", views.renderResposne),
     path("callMyRep", views.callMyRep),
+    path("emailMyRep", views.emailMyRep),
     path("stateLegislators", views.LookupStateLegislators),
     path("locateMe", views.locateMe),
     path("test", views.test),
