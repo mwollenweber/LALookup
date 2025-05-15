@@ -24,30 +24,35 @@ def index(request):
     return HttpResponse("Hello, world. You're at the LALookup index.")
 
 
-@require_http_methods(["POST"])
+@require_http_methods(["POST", "GET"])
 def addressSearch(request):
-    try:
-        if "lat" in request.POST.keys() and "lon" in request.POST.keys():
-            lat = request.POST["lat"]
-            lon = request.POST["lon"]
-            address = ""
-        elif "address" in request.POST.keys():
-            address = request.POST["address"]
-            lat, lon = address2latlon(address)
-
-        r = {
-            "status": "success",
-            "address": address,
-            "lat": lat,
-            "long": lon,
-            "parish": latlon2Parish(lat, lon),
-            "results": getStateLegislators(lat, lon),
-        }
-    except KeyError as e:
-        r = {
+    if "lat" in request.POST.keys() and "lon" in request.POST.keys():
+        lat = request.POST["lat"]
+        lon = request.POST["lon"]
+        address = ""
+    elif "address" in request.POST.keys():
+        address = request.POST["address"]
+        lat, lon = address2latlon(address)
+    elif "lat" in request.GET.keys() and "lon" in request.GET.keys():
+        lat = request.GET["lat"]
+        lon = request.GET["lon"]
+        address = ""
+    elif "address" in request.GET.keys():
+        address = request.GET["address"]
+        lat, lon = address2latlon(address)
+    else:
+        return JsonResponse({
             "status": "error",
-            "message": f"KeyError: Missing {e}",
-        }
+            "message": f"You must provide an address or lat+lon",
+        })
+    r = {
+        "status": "success",
+        "address": address,
+        "lat": lat,
+        "long": lon,
+        "parish": latlon2Parish(lat, lon),
+        "results": getStateLegislators(lat, lon),
+    }
     return JsonResponse(r)
 
 
