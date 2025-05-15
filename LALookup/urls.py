@@ -8,10 +8,9 @@ from django.urls import path
 from LALookup import views
 
 urlpatterns = [
-    #index
+    # index
     path("", views.index),
-
-    #WEB
+    # WEB
     path("contact", views.renderResposne),
     path("callMyStateRep", views.callMyStateRep),
     path("emailMyStateRep", views.emailMyStateRep),
@@ -23,17 +22,13 @@ urlpatterns = [
     path("emailMyRep", views.test),
     path("emailMyMayor", views.test),
     path("callMyMayor", views.test),
-
-
     path("stateLegislators", views.LookupStateLegislators),
     path("locateMe", views.locateMe),
     path("test", views.test),
-    #path("redirect", views.redirect),
-
-    #API
+    # path("redirect", views.redirect),
+    # API
     path("api/test", views.apitest),
     path("api/addressSearch", views.addressSearch),
-
-    #admin
+    # admin
     path("admin/", admin.site.urls),
 ]

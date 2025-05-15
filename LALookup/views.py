@@ -9,7 +9,13 @@ from django.utils.timezone import make_aware
 from django.views.decorators.http import require_http_methods
 from django.template import loader
 from django.conf import settings
-from .lalookup import address2latlon, getStateLegislators, latlon2Parish, getStateRep, getStateSenator
+from .lalookup import (
+    address2latlon,
+    getStateLegislators,
+    latlon2Parish,
+    getStateRep,
+    getStateSenator,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -18,14 +24,14 @@ def index(request):
     return HttpResponse("Hello, world. You're at the LALookup index.")
 
 
-@require_http_methods( ["POST"])
+@require_http_methods(["POST"])
 def addressSearch(request):
     try:
-        if 'lat' in request.POST.keys() and 'lon' in request.POST.keys():
-            lat = request.POST['lat']
-            lon = request.POST['lon']
-            address = ''
-        elif 'address' in request.POST.keys():
+        if "lat" in request.POST.keys() and "lon" in request.POST.keys():
+            lat = request.POST["lat"]
+            lon = request.POST["lon"]
+            address = ""
+        elif "address" in request.POST.keys():
             address = request.POST["address"]
             lat, lon = address2latlon(address)
 
@@ -173,5 +179,3 @@ def renderResposne(request, response=None):
         "results": results,
     }
     return HttpResponse(template.render(context, request))
-
-

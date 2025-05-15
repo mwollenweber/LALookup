@@ -3,7 +3,8 @@ import geopandas as gp
 import csv
 import logging
 from shapely.geometry import Point
-#from pygris.geocode import geocode
+
+# from pygris.geocode import geocode
 from django.conf import settings
 from geopy.geocoders import Nominatim
 from .models import Legislator, SoSElectedOfficial
@@ -23,11 +24,11 @@ def latlon2Parish(lat, lon):
 
 
 def address2latlon(address):
-    #geocode uses https://geocoding.geo.census.gov/geocoder/Geocoding_Services_API.html
-    #outage 2025-MAY-14
-    #gc = geocode(address)
+    # geocode uses https://geocoding.geo.census.gov/geocoder/Geocoding_Services_API.html
+    # outage 2025-MAY-14
+    # gc = geocode(address)
 
-    #Nominatim Uses OpenStreet Map
+    # Nominatim Uses OpenStreet Map
     gc = Nominatim(user_agent="LALookup").geocode(address)
     return float(gc.latitude), float(gc.longitude)
 
