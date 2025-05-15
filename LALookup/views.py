@@ -9,22 +9,13 @@ from django.utils.timezone import make_aware
 from django.views.decorators.http import require_http_methods
 from django.template import loader
 from django.conf import settings
-from .lalookup import address2latlon, getStateLegislators, latlon2Parish, getStateRep
-
+from .lalookup import address2latlon, getStateLegislators, latlon2Parish, getStateRep, getStateSenator
 
 logger = logging.getLogger(__name__)
 
 
 def index(request):
     return HttpResponse("Hello, world. You're at the LALookup index.")
-
-
-def redirect(request):
-    template = loader.get_template("redirect.html")
-    print("fixme")
-    target_url = 'tel:504-952-6541'
-    context = {"target_url": target_url}
-    return HttpResponse(template.render(context, request))
 
 
 @require_http_methods( ["POST"])
@@ -55,28 +46,25 @@ def addressSearch(request):
 
 
 @require_http_methods(["GET"])
-def searchMe(request):
-    template = loader.get_template("search.html")
-    context = {}
-    return HttpResponse(template.render(context, request))
-
-
-@require_http_methods(["GET"])
 def locateMe(request):
-    template = loader.get_template("locateme.html")
+    template = loader.get_template("search.html")
     context = {}
     return HttpResponse(template.render(context, request))
 
 
 @require_http_methods(["GET", "POST"])
-def callMyRep(request):
+def callMyStateRep(request):
     if request.method == "POST":
         lat = request.POST["lat"]
         lon = request.POST["lon"]
-        rep = getStateRep(lat, lon)
-        target_url = f"tel:{rep['office_phone']}"
+        official = getStateRep(lat, lon)
+        target_url = f"tel:{official['office_phone']}"
         template = loader.get_template("redirect.html")
-        context = {"target_url": target_url}
+        context = {
+            "target_url": target_url,
+            "header": "Your State Represenative",
+            "results": [official],
+        }
         return HttpResponse(template.render(context, request))
     else:
         template = loader.get_template("locateme.html")
@@ -85,14 +73,18 @@ def callMyRep(request):
 
 
 @require_http_methods(["GET", "POST"])
-def emailMyRep(request):
+def emailMyStateRep(request):
     if request.method == "POST":
         lat = request.POST["lat"]
         lon = request.POST["lon"]
-        rep = getStateRep(lat, lon)
-        target_url = f"mailto:{rep['email']}"
+        official = getStateRep(lat, lon)
+        target_url = f"mailto:{official['email']}"
         template = loader.get_template("redirect.html")
-        context = {"target_url": target_url}
+        context = {
+            "target_url": target_url,
+            "header": "Your State Represenative",
+            "results": [official],
+        }
         return HttpResponse(template.render(context, request))
     else:
         template = loader.get_template("locateme.html")
@@ -100,19 +92,44 @@ def emailMyRep(request):
         return HttpResponse(template.render(context, request))
 
 
-@require_http_methods(["GET"])
-def callMySenator(request):
-    template = loader.get_template("search.html")
-    context = {}
-    return HttpResponse(template.render(context, request))
+@require_http_methods(["GET", "POST"])
+def callMyStateSenator(request):
+    if request.method == "POST":
+        lat = request.POST["lat"]
+        lon = request.POST["lon"]
+        official = getStateSenator(lat, lon)
+        target_url = f"tel:{official['office_phone']}"
+        template = loader.get_template("redirect.html")
+        context = {
+            "target_url": target_url,
+            "header": "Your State Senator",
+            "results": [official],
+        }
+        return HttpResponse(template.render(context, request))
+    else:
+        template = loader.get_template("locateme.html")
+        context = {}
+        return HttpResponse(template.render(context, request))
 
 
-@require_http_methods(["GET"])
-def emailMySenator(request):
-    template = loader.get_template("search.html")
-    context = {}
-    return HttpResponse(template.render(context, request))
-
+@require_http_methods(["GET", "POST"])
+def emailMyStateSenator(request):
+    if request.method == "POST":
+        lat = request.POST["lat"]
+        lon = request.POST["lon"]
+        official = getStateSenator(lat, lon)
+        target_url = f"mailto:{official['email']}"
+        template = loader.get_template("redirect.html")
+        context = {
+            "target_url": target_url,
+            "header": "Your State Senator",
+            "results": [official],
+        }
+        return HttpResponse(template.render(context, request))
+    else:
+        template = loader.get_template("locateme.html")
+        context = {}
+        return HttpResponse(template.render(context, request))
 
 
 def apitest(request):
