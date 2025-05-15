@@ -68,7 +68,7 @@ def callMyStateRep(request):
         template = loader.get_template("redirect.html")
         context = {
             "target_url": target_url,
-            "header": "Your State Represenative",
+            "header": "Your State Representative",
             "results": [official],
         }
         return HttpResponse(template.render(context, request))
@@ -88,7 +88,7 @@ def emailMyStateRep(request):
         template = loader.get_template("redirect.html")
         context = {
             "target_url": target_url,
-            "header": "Your State Represenative",
+            "header": "Your State Representative",
             "results": [official],
         }
         return HttpResponse(template.render(context, request))
