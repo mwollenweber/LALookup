@@ -151,7 +151,6 @@ class SoSElectedOfficial(Person):
             "email": self.officeEmail,
             "office_phone": self.officePhone,
             "office_url": self.website,
-            # "district": self.districtnumber,
             "party": self.party,
             "gender": self.gender,
             "twitter": self.twitter,

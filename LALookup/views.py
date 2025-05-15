@@ -233,7 +233,7 @@ def apitest(request):
         "lat": lat,
         "long": lon,
         "parish": latlon2Parish(lat, lon),
-        "results": getStateLegislators(lat, lon),
+        "results": getElectedOfficials(lat, lon),
     }
     return JsonResponse(r)
 
@@ -241,11 +241,10 @@ def apitest(request):
 def test(request):
     address = "4521 Magazine St, 70115"
     lat, lon = address2latlon(address)
-    results = getStateLegislators(lat, lon)
     logger.info(f"render body: {request.body}")
     template = loader.get_template("contact.html")
     context = {
-        "results": results,
+        "results": getElectedOfficials(lat, lon)
     }
     return HttpResponse(template.render(context, request))
 
@@ -257,8 +256,6 @@ def LookupStateLegislators(request):
 def renderResposne(request, response=None):
     lat = request.POST["lat"]
     lon = request.POST["lon"]
-
-
     logger.info(f"render body: {request.body}")
     template = loader.get_template("contact.html")
     context = {
