@@ -150,7 +150,7 @@ class SoSElectedOfficial(Person):
             "last_name": self.last_name,
             "email": self.officeEmail,
             "office_phone": self.officePhone,
-            # "office_url": self.officeURL,
+            "office_url": self.website,
             # "district": self.districtnumber,
             "party": self.party,
             "gender": self.gender,
