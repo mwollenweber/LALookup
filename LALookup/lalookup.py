@@ -113,6 +113,15 @@ def getGovernor(lat, lon):
         return None
 
 
+def getElectedOfficials(lat, lon):
+    elected_officials = []
+    elected_officials.append(getStateSenator(lat, lon))
+    elected_officials.append(getStateRep(lat, lon))
+    elected_officials.append(getGovernor(lat, lon))
+    elected_officials.append(getMayor(lat, lon))
+    return elected_officials
+
+
 def loadLegislators(filename, chamber):
     with open(filename, newline="") as csvfile:
         reader = csv.DictReader(csvfile)

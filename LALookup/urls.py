@@ -9,7 +9,8 @@ from LALookup import views
 
 urlpatterns = [
     # index
-    path("", views.index),
+    path("", views.locateMe),
+
     # WEB
     path("contact", views.renderResposne),
     path("callMyStateRep", views.callMyStateRep),
@@ -25,6 +26,7 @@ urlpatterns = [
     path("stateLegislators", views.LookupStateLegislators),
     path("locateMe", views.locateMe),
     path("test", views.test),
+    
     # API
     path("api/test", views.apitest),
     path("api/addressSearch", views.addressSearch),

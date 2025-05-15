@@ -10,13 +10,15 @@ from .lalookup import (
     getStateSenator,
     getGovernor,
     getMayor,
+    getElectedOfficials,
 )
 
 logger = logging.getLogger(__name__)
 
 
 def index(request):
-    return HttpResponse("Hello, world. You're at the LALookup index.")
+    return Redire
+
 
 
 @require_http_methods(["POST", "GET"])
@@ -42,11 +44,6 @@ def addressSearch(request):
                 "message": f"You must provide an address or lat+lon",
             }
         )
-    elected_officials = []
-    elected_officials.append(getStateSenator(lat, lon))
-    elected_officials.append(getStateRep(lat, lon))
-    elected_officials.append(getGovernor(lat, lon))
-    elected_officials.append(getMayor(lat, lon))
 
     response = {
         "status": "success",
@@ -55,7 +52,7 @@ def addressSearch(request):
         "long": lon,
         "parish": latlon2Parish(lat, lon),
         "state": "LA",
-        "results": elected_officials,
+        "results": getElectedOfficials(lat, lon),
     }
     return JsonResponse(response)
 
@@ -260,11 +257,11 @@ def LookupStateLegislators(request):
 def renderResposne(request, response=None):
     lat = request.POST["lat"]
     lon = request.POST["lon"]
-    results = getStateLegislators(lat, lon)
+
 
     logger.info(f"render body: {request.body}")
     template = loader.get_template("contact.html")
     context = {
-        "results": results,
+        "results": getElectedOfficials(lat, lon),
     }
     return HttpResponse(template.render(context, request))
