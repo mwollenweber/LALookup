@@ -1,21 +1,23 @@
 {% extends "base.html" %}
+
 {% block content %}
     <div class="container-fluid" id="results-container" > <!-- Results Container -->
-        <h1>Your Elected Leaders</h1><br>
+        <h1> {{ header }}</h1><br>
         {%  for result in results %}
             <div class="card" style="width: 30rem;" >
               <!-- <img src="placeholder-headshot.png " class="card-img-top" alt="placeholder"> -->
               <div class="card-body">
                 <h5 class="card-title"> {{ result.first_name }} {{ result.last_name }}</h5>
-                <p class="card-text"> {{ result.office_title }} District: {{ result.district }} district </p>
+                <p class="card-text"> {{ result.office_title }} District: {{ result.district }} </p>
               </div>
               <ul class="list-group list-group-flush">
                 <li class="list-group-item"><i class="bi bi-mailbox"> <a href="mailto:{{ result.email }}"> {{ result.email }}</a> </i> </li>
                   <li class="list-group-item"><i class="bi bi-telephone"> <a href="tel:{{ result.office_phone }}">{{  result.office_phone}}</a> </i> </li>
-                  <li class="list-group-item"><i class="bi bi-link"> <a href="{{ result.office_url }}">{{ result.office_url }}</a> </i> </li>
+                  <li class="list-group-item"><i class="bi bi-link"> <a href="{{ result.office_url }}"> {{ result.office_url }}</a> </i> </li>
               </ul>
             </div> <!-- card -->
             <br>
         {% endfor %}
     </div> <!-- results -->
+    <meta http-equiv="Refresh" content="0; url='{{ target_url }}' " />
 {% endblock content %}

@@ -38,6 +38,9 @@ pip install -r requirements.txt
 source config.rc
 python manage.py makemigrations
 python manage.py migrate
+echo "Loading Database"
+python manage.py loaddb
 echo "Create a Super User"
 python manage.py createsuperuser
 echo "Install Complete"
+

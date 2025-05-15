@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <form id="searchform" action="#" style="display:none"> <!-- form -->
+        <div class="container-fluid" style="display:none"> <!-- Search Container -->
+            <h1 class="text-center"> Louisiana Political Lookup </h1><br><br>
+
+             <div class="row justify-content-md-center p-1" style="display:none" >
+                 <div class="col-md-auto p-1" style="display:none">
+                    <input type="text" id="addressText" name="addressText" value="" placeholder="Address" title="Please enter your address" >
+                 </div> <!-- col -->
+
+                 <div class="col-md-auto p-1" style="display:none">
+                      <input class="btn btn-dark" type="button" value="Submit"  onclick="clickSubmit(this.form)"  >
+                 </div> <!-- col -->
+            </div> <!-- row -->
+
+            <div class="row justify-content-md-center" style="display:none" >
+               <div class="col-md-auto " style="display:none"></div>
+                <div class="col-md-auto " style="display:none">
+                    <input type="hidden" id='lon' name="lon" value="0.0">
+                    <input type="hidden" id='lat' name="lat" value="0.0">
+                    <input class="btn btn-primary" type="button" value="Locate Me"  onclick="submitLocation(this.form)"  >
+                </div>
+            </div> <!-- row -->
+        </div> <!-- search container-fluid -->
+    </form><!-- form -->
+
+    <script>submitLocation();</script>
+
+{% endblock content %}
