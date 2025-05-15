@@ -21,6 +21,7 @@ def index(request):
 
 def redirect(request):
     template = loader.get_template("redirect.html")
+    print("fixme")
     target_url = 'tel:504-952-6541'
     context = {"target_url": target_url}
     return HttpResponse(template.render(context, request))
@@ -67,28 +68,36 @@ def locateMe(request):
     return HttpResponse(template.render(context, request))
 
 
-@require_http_methods(["GET"])
+@require_http_methods(["GET", "POST"])
 def callMyRep(request):
-    template = loader.get_template("search.html")
-    context = {}
-    return HttpResponse(template.render(context, request))
+    if request.method == "POST":
+        lat = request.POST["lat"]
+        lon = request.POST["lon"]
+        rep = getStateRep(lat, lon)
+        target_url = f"tel:{rep['office_phone']}"
+        template = loader.get_template("redirect.html")
+        context = {"target_url": target_url}
+        return HttpResponse(template.render(context, request))
+    else:
+        template = loader.get_template("locateme.html")
+        context = {}
+        return HttpResponse(template.render(context, request))
 
 
-@require_http_methods(["GET"])
+@require_http_methods(["GET", "POST"])
 def emailMyRep(request):
-    print("emailMyRep")
-    template = loader.get_template("locateme.html")
-
-    #test data
-    address = "4521 Magazine St, 70115"
-    lat, lon = address2latlon(address)
-    results = getStateRep(lat, lon)
-    #results = getStateLegislators(lat, lon)
-    context = {
-        "results": results,
-    }
-    print("about to return")
-    return HttpResponse(template.render(context, request))
+    if request.method == "POST":
+        lat = request.POST["lat"]
+        lon = request.POST["lon"]
+        rep = getStateRep(lat, lon)
+        target_url = f"mailto:{rep['email']}"
+        template = loader.get_template("redirect.html")
+        context = {"target_url": target_url}
+        return HttpResponse(template.render(context, request))
+    else:
+        template = loader.get_template("locateme.html")
+        context = {}
+        return HttpResponse(template.render(context, request))
 
 
 @require_http_methods(["GET"])
@@ -108,9 +117,7 @@ def emailMySenator(request):
 
 def apitest(request):
     address = "4521 Magazine St, 70115"
-    print("about to lat lon")
     lat, lon = address2latlon(address)
-    print("lat lon")
     r = {
         "status": "success",
         "address": address,
@@ -136,8 +143,6 @@ def test(request):
 
 def LookupStateLegislators(request):
     addressSearch(request)
-
-
 
 
 def renderResposne(request, response=None):

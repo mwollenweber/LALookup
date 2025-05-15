@@ -63,7 +63,7 @@ def getStateRep(lat, lon):
         rep = Legislator.objects.get(
             districtnumber=getHouseDistrict(lat, lon), chamber="House"
         )
-        return [rep.todict()]
+        return rep.todict()
     except Legislator.DoesNotExist as e:
         logger.error("ERROR: Rep not found {e}")
         return None
@@ -74,14 +74,14 @@ def getStateSenator(lat, lon):
         sen = Legislator.objects.get(
             districtnumber=getSenateDistrict(lat, lon), chamber="Senate"
         )
-        return [sen.todict()]
+        return sen.todict()
     except Legislator.DoesNotExist as e:
         logger.error("ERROR: Senator not found {e}")
         return None
 
 
 def getStateLegislators(lat, lon):
-    return getStateSenator(lat, lon) + getStateRep(lat, lon)
+    return [getStateSenator(lat, lon), getStateRep(lat, lon)]
 
 
 def getMemberURL(chamber, member_id):

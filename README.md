@@ -2,10 +2,10 @@
 Django App to Lookup Louisiana Officials
 
 ## Installation
-1. install.sh
+- bash install.sh
 
-## Run it 
-1. run.sh 
+## Run it
+- bash run.sh 
 
 ## Data Sources
 
@@ -18,4 +18,8 @@ Django App to Lookup Louisiana Officials
 1. Stan Oklobdzija @stano.bsky.social
 2. NolaCon
 
+##Contact
+Matthew Wollenweber: mjw@insomniac.tech
+
 ## Copyright
+© Matthew Wollenweber 2025. All rights reserved. 
