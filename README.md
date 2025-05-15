@@ -1,6 +1,19 @@
 # LALookup
 Django App to Lookup Louisiana Officials
 
+## See it Work (if you're in Louisiana)
+1. https://lalookup-530602149581.herokuapp.com/locateMe
+2. https://lalookup-530602149581.herokuapp.com/callMyStateRep
+3. https://lalookup-530602149581.herokuapp.com/emailMyStateRep
+4. https://lalookup-530602149581.herokuapp.com/callMyStateSenator
+5. https://lalookup-530602149581.herokuapp.com/emailMyStateSenator
+6. https://lalookup-530602149581.herokuapp.com/callMyMayor
+7. https://lalookup-530602149581.herokuapp.com/emailMyMayor
+8. https://lalookup-530602149581.herokuapp.com/callMyGovernor
+9. https://lalookup-530602149581.herokuapp.com/emailMyGovernor
+
+
+
 ## Installation
 - bash install.sh
 
@@ -18,7 +31,7 @@ Django App to Lookup Louisiana Officials
 1. Stan Oklobdzija @stano.bsky.social
 2. NolaCon
 
-##Contact
+## Contact
 Matthew Wollenweber: mjw@insomniac.tech
 
 ## Copyright

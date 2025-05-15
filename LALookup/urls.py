@@ -25,7 +25,6 @@ urlpatterns = [
     path("stateLegislators", views.LookupStateLegislators),
     path("locateMe", views.locateMe),
     path("test", views.test),
-
     # API
     path("api/test", views.apitest),
     path("api/addressSearch", views.addressSearch),
