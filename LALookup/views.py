@@ -1,20 +1,15 @@
 import logging
-import traceback
-import json
-from datetime import datetime, timedelta, timezone
 from django.http import HttpResponse, JsonResponse
-from django.shortcuts import render
-from django.utils.html import escape
-from django.utils.timezone import make_aware
 from django.views.decorators.http import require_http_methods
 from django.template import loader
-from django.conf import settings
 from .lalookup import (
     address2latlon,
     getStateLegislators,
     latlon2Parish,
     getStateRep,
     getStateSenator,
+    getGovernor,
+    getMayor,
 )
 
 logger = logging.getLogger(__name__)
@@ -41,19 +36,28 @@ def addressSearch(request):
         address = request.GET["address"]
         lat, lon = address2latlon(address)
     else:
-        return JsonResponse({
-            "status": "error",
-            "message": f"You must provide an address or lat+lon",
-        })
-    r = {
+        return JsonResponse(
+            {
+                "status": "error",
+                "message": f"You must provide an address or lat+lon",
+            }
+        )
+    elected_officials = []
+    elected_officials.append(getStateSenator(lat, lon))
+    elected_officials.append(getStateRep(lat, lon))
+    elected_officials.append(getGovernor(lat, lon))
+    elected_officials.append(getMayor(lat, lon))
+
+    response = {
         "status": "success",
         "address": address,
         "lat": lat,
         "long": lon,
         "parish": latlon2Parish(lat, lon),
-        "results": getStateLegislators(lat, lon),
+        "state": "LA",
+        "results": elected_officials,
     }
-    return JsonResponse(r)
+    return JsonResponse(response)
 
 
 @require_http_methods(["GET"])
@@ -134,6 +138,86 @@ def emailMyStateSenator(request):
         context = {
             "target_url": target_url,
             "header": "Your State Senator",
+            "results": [official],
+        }
+        return HttpResponse(template.render(context, request))
+    else:
+        template = loader.get_template("locateme.html")
+        context = {}
+        return HttpResponse(template.render(context, request))
+
+
+@require_http_methods(["GET", "POST"])
+def callMyMayor(request):
+    if request.method == "POST":
+        lat = request.POST["lat"]
+        lon = request.POST["lon"]
+        official = getMayor(lat, lon)
+        target_url = f"tel:{official['office_phone']}"
+        template = loader.get_template("redirect.html")
+        context = {
+            "target_url": target_url,
+            "header": "Your Mayor",
+            "results": [official],
+        }
+        return HttpResponse(template.render(context, request))
+    else:
+        template = loader.get_template("locateme.html")
+        context = {}
+        return HttpResponse(template.render(context, request))
+
+
+@require_http_methods(["GET", "POST"])
+def emailMyMayor(request):
+    if request.method == "POST":
+        lat = request.POST["lat"]
+        lon = request.POST["lon"]
+        official = getMayor(lat, lon)
+        target_url = f"mailto:{official['email']}"
+        template = loader.get_template("redirect.html")
+        context = {
+            "target_url": target_url,
+            "header": "Your Mayor",
+            "results": [official],
+        }
+        return HttpResponse(template.render(context, request))
+    else:
+        template = loader.get_template("locateme.html")
+        context = {}
+        return HttpResponse(template.render(context, request))
+
+
+@require_http_methods(["GET", "POST"])
+def callMyGovernor(request):
+    if request.method == "POST":
+        lat = request.POST["lat"]
+        lon = request.POST["lon"]
+        official = getGovernor(lat, lon)
+        target_url = f"tel:{official['office_phone']}"
+        template = loader.get_template("redirect.html")
+        context = {
+            "target_url": target_url,
+            "header": "Your Governor",
+            "results": [official],
+        }
+        return HttpResponse(template.render(context, request))
+    else:
+        template = loader.get_template("locateme.html")
+        context = {}
+        return HttpResponse(template.render(context, request))
+
+
+@require_http_methods(["GET", "POST"])
+def emailMyGovernor(request):
+    if request.method == "POST":
+        lat = request.POST["lat"]
+        lon = request.POST["lon"]
+        official = getGovernor(lat, lon)
+        target_url = f"mailto:{official['email']}"
+        template = loader.get_template("redirect.html")
+        context = {
+            "target_url": target_url,
+            "header": "Your Governor",
             "results": [official],
         }
         return HttpResponse(template.render(context, request))

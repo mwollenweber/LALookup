@@ -3,8 +3,6 @@ import geopandas as gp
 import csv
 import logging
 from shapely.geometry import Point
-
-# from pygris.geocode import geocode
 from django.conf import settings
 from geopy.geocoders import Nominatim
 from .models import Legislator, SoSElectedOfficial
@@ -24,10 +22,6 @@ def latlon2Parish(lat, lon):
 
 
 def address2latlon(address):
-    # geocode uses https://geocoding.geo.census.gov/geocoder/Geocoding_Services_API.html
-    # outage 2025-MAY-14
-    # gc = geocode(address)
-
     # Nominatim Uses OpenStreet Map
     gc = Nominatim(user_agent="LALookup").geocode(address)
     return float(gc.latitude), float(gc.longitude)
@@ -90,6 +84,33 @@ def getMemberURL(chamber, member_id):
         return f"{settings.HOUSEMEMBERBASEURL}{member_id}"
     else:
         return f"{settings.SENATEMEMBERBASEURL}{member_id}"
+
+
+def getMayor(lat, lon):
+    try:
+        location = Nominatim(user_agent="LALookup").reverse(f"{lat}, {lon}").raw
+        city = location["address"]["city"]
+        mayor = SoSElectedOfficial.objects.filter(
+            officeTitle__icontains="Mayor", officeDescription__icontains=city
+        ).first()
+        return mayor.todict()
+    except Legislator.DoesNotExist as e:
+        logger.error("ERROR: Governor not found {e}")
+        return None
+    except AttributeError as e:
+        logger.error("mayor not found")
+        return None
+
+
+def getGovernor(lat, lon):
+    try:
+        location = Nominatim(user_agent="LALookup").reverse(f"{lat}, {lon}").raw
+        state = location["address"]["state"]
+        gov = SoSElectedOfficial.objects.get(officeTitle="Governor")
+        return gov.todict()
+    except Legislator.DoesNotExist as e:
+        logger.error("ERROR: Governor not found {e}")
+        return None
 
 
 def loadLegislators(filename, chamber):

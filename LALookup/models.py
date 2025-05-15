@@ -138,6 +138,27 @@ class SoSElectedOfficial(Person):
     candidateName = models.CharField(
         max_length=200, blank=True, null=True, db_index=True
     )
+    city = models.CharField(max_length=200, blank=True, null=True, db_index=True)
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
+
+    def todict(self):
+        return {
+            "office_title": self.officeTitle,
+            "first_name": self.first_name,
+            "last_name": self.last_name,
+            "email": self.officeEmail,
+            "office_phone": self.officePhone,
+            # "office_url": self.officeURL,
+            # "district": self.districtnumber,
+            "party": self.party,
+            "gender": self.gender,
+            "twitter": self.twitter,
+            "facebook": self.facebook,
+            "instagram": self.instagram,
+            "campaign_url": "",
+            "youtube": self.youtube,
+            "city": self.city,
+            "state": "LA",
+        }
