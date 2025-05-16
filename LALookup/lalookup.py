@@ -46,13 +46,17 @@ def findShapeIndex(lat, lon, shape):
 def getHouseDistrict(lat, lon):
     shape = gp.read_file(settings.HOUSEMAP)
     index = findShapeIndex(lat, lon, shape)
-    return int(shape.SLDLST[index])
+    if index >= 0:
+        return int(shape.SLDLST[index])
+    return -1
 
 
 def getSenateDistrict(lat, lon):
     shape = gp.read_file(settings.SENATEMAP)
     index = findShapeIndex(lat, lon, shape)
-    return int(shape.SLDUST[index])
+    if index >= 0:
+        return int(shape.SLDUST[index])
+    return -1
 
 
 def getStateRep(lat, lon):
@@ -68,9 +72,9 @@ def getStateRep(lat, lon):
 
 def getStateSenator(lat, lon):
     try:
-        sen = Legislator.objects.get(
+        sen = Legislator.objects.filter(
             districtnumber=getSenateDistrict(lat, lon), chamber="Senate"
-        )
+        ).first()
         return sen.todict()
     except Legislator.DoesNotExist as e:
         logger.error("ERROR: Senator not found {e}")
