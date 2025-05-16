@@ -118,6 +118,7 @@ class SoSElectedOfficial(Person):
     officeZip = models.CharField(max_length=200, blank=True, null=True, db_index=True)
     officePhone = models.CharField(max_length=200, blank=True, null=True, db_index=True)
     officeEmail = models.CharField(max_length=200, blank=True, null=True, db_index=True)
+    officeURL = models.CharField(max_length=200, blank=True, null=True, db_index=True)
     candidateAddress1 = models.CharField(
         max_length=200, blank=True, null=True, db_index=True
     )
@@ -152,6 +153,7 @@ class SoSElectedOfficial(Person):
             "last_name": self.last_name,
             "email": self.officeEmail,
             "office_phone": self.officePhone,
+            "office_url": self.officeURL,
             "personal_phone": self.personalPhone,
             "website": self.website,
             "party": self.party,
