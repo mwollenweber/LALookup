@@ -12,13 +12,15 @@ logger = logging.getLogger(__name__)
 
 
 def latlon2Parish(lat, lon):
-    try:
-        geolocator = Nominatim(user_agent="LALookup")
-        location = geolocator.reverse(f"{lat}, {lon}")
-        return location.raw["address"]["county"]
-    except Exception as e:
-        traceback.print_exc()
-        return None
+    geolocator = Nominatim(user_agent="LALookup")
+    location = geolocator.reverse(f"{lat}, {lon}")
+    return location.raw["address"]["county"]
+
+
+def latlon2addr(lat, long):
+    geolocator = Nominatim(user_agent="LALookup")
+    location = geolocator.reverse(f"{lat}, {lon}")
+    return location.address
 
 
 def address2latlon(address):
@@ -125,12 +127,14 @@ def getOfficials(lat, lon, officeTitle):
 
 def getSenators(lat, lon):
     official_list = []
-    location = Nominatim(user_agent="LALookup").reverse(f"{lat}, {lon}").raw
-    state = location["address"]["state"]
+    state = (
+        Nominatim(user_agent="LALookup")
+        .reverse(f"{lat}, {lon}")
+        .raw["address"]["state"]
+    )
     officials = SoSElectedOfficial.objects.filter(officeTitle="U. S. Senator").all()
     for off in officials:
         official_list.append(off.todict())
-        print(off.todict())
     return official_list
 
 
@@ -140,7 +144,7 @@ def getElectedOfficials(lat, lon):
     elected_officials.append(getStateRep(lat, lon))
     elected_officials.append(getGovernor(lat, lon))
     elected_officials.append(getMayor(lat, lon))
-    elected_officials.append(getSenators(lat, lon))
+    elected_officials += getSenators(lat, lon)
     return elected_officials
 
 

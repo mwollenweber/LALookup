@@ -1,10 +1,12 @@
 import logging
+from urllib.parse import unquote
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.http import require_http_methods
 from django.template import loader
 from .lalookup import (
     address2latlon,
     latlon2Parish,
+    latlon2addr,
     getStateRep,
     getStateSenator,
     getGovernor,
@@ -15,10 +17,6 @@ from .lalookup import (
 logger = logging.getLogger(__name__)
 
 
-def index(request):
-    return Redire
-
-
 @require_http_methods(["POST", "GET"])
 def addressSearch(request):
     if "lat" in request.POST.keys() and "lon" in request.POST.keys():
@@ -26,12 +24,12 @@ def addressSearch(request):
         lon = request.POST["lon"]
         address = ""
     elif "address" in request.POST.keys():
-        address = request.POST["address"]
+        address = unquote(request.POST["address"])
         lat, lon = address2latlon(address)
     elif "lat" in request.GET.keys() and "lon" in request.GET.keys():
         lat = request.GET["lat"]
         lon = request.GET["lon"]
-        address = ""
+        address = latlon2addr(lat, lon)
     elif "address" in request.GET.keys():
         address = request.GET["address"]
         lat, lon = address2latlon(address)
@@ -241,7 +239,10 @@ def test(request):
     lat, lon = address2latlon(address)
     logger.info(f"render body: {request.body}")
     template = loader.get_template("contact.html")
-    context = {"results": getElectedOfficials(lat, lon)}
+    results = getElectedOfficials(lat, lon)
+    for r in results:
+        logger.debug(f"test result: {r}")
+    context = {"results": results}
     return HttpResponse(template.render(context, request))
 
 
@@ -253,6 +254,9 @@ def renderResposne(request, response=None):
     lat = request.POST["lat"]
     lon = request.POST["lon"]
     logger.info(f"render body: {request.body}")
+    results = getElectedOfficials(lat, lon)
+    for r in results:
+        logger.info(f"{r}")
     template = loader.get_template("contact.html")
     context = {
         "results": getElectedOfficials(lat, lon),
