@@ -46,7 +46,7 @@ def findShapeIndex(lat, lon, shape):
 def getHouseDistrict(lat, lon):
     shape = gp.read_file(settings.HOUSEMAP)
     index = findShapeIndex(lat, lon, shape)
-    if index >= 0:
+    if index:
         return int(shape.SLDLST[index])
     return -1
 
@@ -54,7 +54,7 @@ def getHouseDistrict(lat, lon):
 def getSenateDistrict(lat, lon):
     shape = gp.read_file(settings.SENATEMAP)
     index = findShapeIndex(lat, lon, shape)
-    if index >= 0:
+    if index:
         return int(shape.SLDUST[index])
     return -1
 
@@ -71,14 +71,10 @@ def getStateRep(lat, lon):
 
 
 def getStateSenator(lat, lon):
-    try:
-        sen = Legislator.objects.filter(
-            districtnumber=getSenateDistrict(lat, lon), chamber="Senate"
-        ).first()
+    sen = Legislator.objects.filter(districtnumber=getSenateDistrict(lat, lon), chamber="Senate").first()
+    if sen:
         return sen.todict()
-    except Legislator.DoesNotExist as e:
-        logger.error("ERROR: Senator not found {e}")
-        return None
+    return None
 
 
 def getStateLegislators(lat, lon):
@@ -109,14 +105,10 @@ def getMayor(lat, lon):
 
 
 def getGovernor(lat, lon):
-    try:
-        location = Nominatim(user_agent="LALookup").reverse(f"{lat}, {lon}").raw
-        state = location["address"]["state"]
-        gov = SoSElectedOfficial.objects.get(officeTitle="Governor")
-        return gov.todict()
-    except Legislator.DoesNotExist as e:
-        logger.error("ERROR: Governor not found {e}")
-        return None
+    location = Nominatim(user_agent="LALookup").reverse(f"{lat}, {lon}").raw
+    state = location["address"]["state"]
+    gov = SoSElectedOfficial.objects.get(officeTitle="Governor")
+    return gov.todict()
 
 
 def getOfficials(lat, lon, officeTitle):
@@ -175,7 +167,7 @@ def loadLegislators(filename, chamber):
                 chamber=chamber,
             )
 
-
+#fixme: wtf is this?
 def splitName(fullname):
     try:
         parts = fullname.split()

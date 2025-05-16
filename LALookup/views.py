@@ -250,9 +250,19 @@ def LookupStateLegislators(request):
     addressSearch(request)
 
 
-def renderResposne(request, response=None):
-    lat = request.POST["lat"]
-    lon = request.POST["lon"]
+@require_http_methods(["POST"])
+def renderResposne(request):
+
+    if "addressText" in request.POST.keys() and "lat" in request.POST.keys() and "lon" in request.POST.keys():
+        address = request.POST["addressText"]
+        if len(address) > 0:
+            lat, lon = address2latlon(address)
+        else:
+            lat = request.POST["lat"]
+            lon = request.POST["lon"]
+    else:
+        return JsonResponse({"status": "error"})
+
     logger.info(f"render body: {request.body}")
     results = getElectedOfficials(lat, lon)
     for r in results:
