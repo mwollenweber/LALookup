@@ -113,12 +113,34 @@ def getGovernor(lat, lon):
         return None
 
 
+def getOfficials(lat, lon, officeTitle):
+    official_list = []
+    location = Nominatim(user_agent="LALookup").reverse(f"{lat}, {lon}").raw
+    state = location["address"]["state"]
+    officials = SoSElectedOfficial.object.filter(officeTitle=officeTitle).all()
+    for off in officials:
+        official_list.append(off.todict())
+    return official_list
+
+
+def getSenators(lat, lon):
+    official_list = []
+    location = Nominatim(user_agent="LALookup").reverse(f"{lat}, {lon}").raw
+    state = location["address"]["state"]
+    officials = SoSElectedOfficial.objects.filter(officeTitle="U. S. Senator").all()
+    for off in officials:
+        official_list.append(off.todict())
+        print(off.todict())
+    return official_list
+
+
 def getElectedOfficials(lat, lon):
     elected_officials = []
     elected_officials.append(getStateSenator(lat, lon))
     elected_officials.append(getStateRep(lat, lon))
     elected_officials.append(getGovernor(lat, lon))
     elected_officials.append(getMayor(lat, lon))
+    elected_officials.append(getSenators(lat, lon))
     return elected_officials
 
 

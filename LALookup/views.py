@@ -4,7 +4,6 @@ from django.views.decorators.http import require_http_methods
 from django.template import loader
 from .lalookup import (
     address2latlon,
-    getStateLegislators,
     latlon2Parish,
     getStateRep,
     getStateSenator,
@@ -18,7 +17,6 @@ logger = logging.getLogger(__name__)
 
 def index(request):
     return Redire
-
 
 
 @require_http_methods(["POST", "GET"])
@@ -243,9 +241,7 @@ def test(request):
     lat, lon = address2latlon(address)
     logger.info(f"render body: {request.body}")
     template = loader.get_template("contact.html")
-    context = {
-        "results": getElectedOfficials(lat, lon)
-    }
+    context = {"results": getElectedOfficials(lat, lon)}
     return HttpResponse(template.render(context, request))
 
 
