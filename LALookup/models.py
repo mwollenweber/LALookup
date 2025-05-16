@@ -60,6 +60,7 @@ class Legislator(Person):
             "first_name": self.first_name,
             "last_name": self.last_name,
             "email": self.officeEmail,
+            "personal_phone": self.personalPhone,
             "office_phone": self.officePhone,
             "office_url": self.officeURL,
             "district": self.districtnumber,
@@ -71,6 +72,7 @@ class Legislator(Person):
             "campaign_url": "",
             "youtube": self.youtube,
             "chamber": self.chamber,
+            "id": self.id,
         }
 
 
@@ -150,6 +152,7 @@ class SoSElectedOfficial(Person):
             "last_name": self.last_name,
             "email": self.officeEmail,
             "office_phone": self.officePhone,
+            "personal_phone": self.personalPhone,
             "website": self.website,
             "party": self.party,
             "gender": self.gender,
