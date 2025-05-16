@@ -150,7 +150,7 @@ class SoSElectedOfficial(Person):
             "last_name": self.last_name,
             "email": self.officeEmail,
             "office_phone": self.officePhone,
-            "office_url": self.website,
+            "website": self.website,
             "party": self.party,
             "gender": self.gender,
             "twitter": self.twitter,
@@ -160,4 +160,5 @@ class SoSElectedOfficial(Person):
             "youtube": self.youtube,
             "city": self.city,
             "state": "LA",
+            "id": self.id,
         }
