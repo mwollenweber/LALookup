@@ -9,23 +9,24 @@ from .models import Legislator, SoSElectedOfficial
 
 
 logger = logging.getLogger(__name__)
+GEO_TIMEOUT = 5
 
 
 def latlon2Parish(lat, lon):
-    geolocator = Nominatim(user_agent="LALookup")
+    geolocator = Nominatim(user_agent="LALookup", timeout=GEO_TIMEOUT)
     location = geolocator.reverse(f"{lat}, {lon}")
     return location.raw["address"]["county"]
 
 
 def latlon2addr(lat, long):
-    geolocator = Nominatim(user_agent="LALookup")
+    geolocator = Nominatim(user_agent="LALookup", timeout=GEO_TIMEOUT)
     location = geolocator.reverse(f"{lat}, {lon}")
     return location.address
 
 
 def address2latlon(address):
     # Nominatim Uses OpenStreet Map
-    gc = Nominatim(user_agent="LALookup").geocode(address)
+    gc = Nominatim(user_agent="LALookup", timeout=GEO_TIMEOUT).geocode(address)
     return float(gc.latitude), float(gc.longitude)
 
 
@@ -71,7 +72,9 @@ def getStateRep(lat, lon):
 
 
 def getStateSenator(lat, lon):
-    sen = Legislator.objects.filter(districtnumber=getSenateDistrict(lat, lon), chamber="Senate").first()
+    sen = Legislator.objects.filter(
+        districtnumber=getSenateDistrict(lat, lon), chamber="Senate"
+    ).first()
     if sen:
         return sen.todict()
     return None
@@ -90,7 +93,11 @@ def getMemberURL(chamber, member_id):
 
 def getMayor(lat, lon):
     try:
-        location = Nominatim(user_agent="LALookup").reverse(f"{lat}, {lon}").raw
+        location = (
+            Nominatim(user_agent="LALookup", timeout=GEO_TIMEOUT)
+            .reverse(f"{lat}, {lon}")
+            .raw
+        )
         city = location["address"]["city"]
         mayor = SoSElectedOfficial.objects.filter(
             officeTitle__icontains="Mayor", officeDescription__icontains=city
@@ -105,7 +112,11 @@ def getMayor(lat, lon):
 
 
 def getGovernor(lat, lon):
-    location = Nominatim(user_agent="LALookup").reverse(f"{lat}, {lon}").raw
+    location = (
+        Nominatim(user_agent="LALookup", timeout=GEO_TIMEOUT)
+        .reverse(f"{lat}, {lon}")
+        .raw
+    )
     state = location["address"]["state"]
     gov = SoSElectedOfficial.objects.get(officeTitle="Governor")
     return gov.todict()
@@ -113,7 +124,11 @@ def getGovernor(lat, lon):
 
 def getOfficials(lat, lon, officeTitle):
     official_list = []
-    location = Nominatim(user_agent="LALookup").reverse(f"{lat}, {lon}").raw
+    location = (
+        Nominatim(user_agent="LALookup", timeout=GEO_TIMEOUT)
+        .reverse(f"{lat}, {lon}")
+        .raw
+    )
     state = location["address"]["state"]
     officials = SoSElectedOfficial.object.filter(officeTitle=officeTitle).all()
     for off in officials:
@@ -123,11 +138,11 @@ def getOfficials(lat, lon, officeTitle):
 
 def getSenators(lat, lon):
     official_list = []
-    state = (
-        Nominatim(user_agent="LALookup")
-        .reverse(f"{lat}, {lon}")
-        .raw["address"]["state"]
-    )
+    # state = (
+    #     Nominatim(user_agent="LALookup")
+    #     .reverse(f"{lat}, {lon}")
+    #     .raw["address"]["state"]
+    # )
     officials = SoSElectedOfficial.objects.filter(officeTitle="U. S. Senator").all()
     for off in officials:
         official_list.append(off.todict())
@@ -167,7 +182,8 @@ def loadLegislators(filename, chamber):
                 chamber=chamber,
             )
 
-#fixme: wtf is this?
+
+# fixme: wtf is this?
 def splitName(fullname):
     try:
         parts = fullname.split()

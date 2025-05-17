@@ -253,8 +253,13 @@ def LookupStateLegislators(request):
 @require_http_methods(["POST"])
 def renderResposne(request):
 
-    if "addressText" in request.POST.keys() and "lat" in request.POST.keys() and "lon" in request.POST.keys():
+    if (
+        "addressText" in request.POST.keys()
+        and "lat" in request.POST.keys()
+        and "lon" in request.POST.keys()
+    ):
         address = request.POST["addressText"]
+        print("address: ", address)
         if len(address) > 0:
             lat, lon = address2latlon(address)
         else:
