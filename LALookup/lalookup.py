@@ -1,7 +1,6 @@
 import geopandas as gp
 import csv
 import logging
-import shapefile
 from shapely.geometry import Point
 from django.conf import settings
 from geopy.geocoders import Nominatim
@@ -30,18 +29,11 @@ def address2latlon(address):
     return float(gc.latitude), float(gc.longitude)
 
 
-def within_shape(df, shapes):
-    in_shape = []
-    for sh in shapes.geometry:
-        within = df.within(sh)
-        in_shape.append(within)
-    return in_shape
-
-
 def findGeo(lat, lon, shape):
     for geo in shape.geometry:
         if geo.contains(Point(lon, lat)):
             return geo
+
 
 def findShapeIndex(lat, lon, shape):
     for i in range(0, len(shape.geometry)):
@@ -51,9 +43,9 @@ def findShapeIndex(lat, lon, shape):
 
 def getCongressDistrict(lat, lon):
     shape = gp.read_file(settings.CONGRESSMAP)
+    shape = shape.to_crs("EPSG:4269")
     index = findShapeIndex(lat, lon, shape)
-    return index
-
+    return shape.OFFICE_ID[index]
 
 
 def getHouseDistrict(lat, lon):
