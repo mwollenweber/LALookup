@@ -41,11 +41,32 @@ def findShapeIndex(lat, lon, shape):
             return i
 
 
+def getCongressIndex(lat, lon):
+    shape = gp.read_file(settings.CONGRESSMAP)
+    shape = shape.to_crs("EPSG:4269")
+    index = findShapeIndex(lat, lon, shape)
+    return index
+
+
 def getCongressDistrict(lat, lon):
     shape = gp.read_file(settings.CONGRESSMAP)
     shape = shape.to_crs("EPSG:4269")
     index = findShapeIndex(lat, lon, shape)
     return shape.OFFICE_ID[index]
+
+
+def getCongressPerson(lat, lon):
+    shape = gp.read_file(settings.CONGRESSMAP)
+    shape = shape.to_crs("EPSG:4269")
+    index = findShapeIndex(lat, lon, shape)
+    print(shape.FIRSTNAME[index])
+    rep = SoSElectedOfficial.objects.filter(
+            officeTitle__icontains="U. S. Representative",
+            first_name__icontains=shape.FIRSTNAME[index],
+            last_name__icontains=shape.LASTNAME[index],
+        ).first()
+    if rep:
+        return rep.todict()
 
 
 def getHouseDistrict(lat, lon):
@@ -130,7 +151,7 @@ def getOfficials(lat, lon, officeTitle):
     #     .reverse(f"{lat}, {lon}")
     #     .raw
     # )
-    state = location["address"]["state"]
+    #state = location["address"]["state"]
     officials = SoSElectedOfficial.object.filter(officeTitle=officeTitle).all()
     for off in officials:
         official_list.append(off.todict())
@@ -156,9 +177,8 @@ def getElectedOfficials(lat, lon):
     elected_officials.append(getStateRep(lat, lon))
     elected_officials.append(getGovernor(lat, lon))
     elected_officials.append(getMayor(lat, lon))
+    elected_officials.append(getCongressPerson(lat, lon))
     elected_officials += getSenators(lat, lon)
-    congress_district = getCongressDistrict(lat, lon)
-    elected_officials.append({"congress_district": congress_district})
     return elected_officials
 
 
