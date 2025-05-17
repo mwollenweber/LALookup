@@ -259,7 +259,6 @@ def renderResposne(request):
         and "lon" in request.POST.keys()
     ):
         address = request.POST["addressText"]
-        print("address: ", address)
         if len(address) > 0:
             lat, lon = address2latlon(address)
         else:
@@ -270,10 +269,8 @@ def renderResposne(request):
 
     logger.info(f"render body: {request.body}")
     results = getElectedOfficials(lat, lon)
-    for r in results:
-        logger.info(f"{r}")
     template = loader.get_template("contact.html")
     context = {
-        "results": getElectedOfficials(lat, lon),
+        "results": results,
     }
     return HttpResponse(template.render(context, request))

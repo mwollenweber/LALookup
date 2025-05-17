@@ -1,4 +1,3 @@
-import traceback
 import geopandas as gp
 import csv
 import logging
@@ -18,7 +17,7 @@ def latlon2Parish(lat, lon):
     return location.raw["address"]["county"]
 
 
-def latlon2addr(lat, long):
+def latlon2addr(lat, lon):
     geolocator = Nominatim(user_agent="LALookup", timeout=GEO_TIMEOUT)
     location = geolocator.reverse(f"{lat}, {lon}")
     return location.address
@@ -124,11 +123,11 @@ def getGovernor(lat, lon):
 
 def getOfficials(lat, lon, officeTitle):
     official_list = []
-    location = (
-        Nominatim(user_agent="LALookup", timeout=GEO_TIMEOUT)
-        .reverse(f"{lat}, {lon}")
-        .raw
-    )
+    # location = (
+    #     Nominatim(user_agent="LALookup", timeout=GEO_TIMEOUT)
+    #     .reverse(f"{lat}, {lon}")
+    #     .raw
+    # )
     state = location["address"]["state"]
     officials = SoSElectedOfficial.object.filter(officeTitle=officeTitle).all()
     for off in officials:
