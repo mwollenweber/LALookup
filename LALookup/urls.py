@@ -18,6 +18,8 @@ urlpatterns = [
     path("emailMyStateSenator", views.emailMyStateSenator),
     path("callMyGovernor", views.callMyGovernor),
     path("emailMyGovernor", views.emailMyGovernor),
+    path("callMyGov", views.callMyGovernor),
+    path("emailMyGov", views.emailMyGovernor),
     path("callMyRep", views.test),
     path("emailMyRep", views.test),
     path("emailMyMayor", views.emailMyMayor),
