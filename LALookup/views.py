@@ -12,6 +12,7 @@ from .lalookup import (
     getGovernor,
     getMayor,
     getElectedOfficials,
+    getUSRep,
 )
 
 logger = logging.getLogger(__name__)
@@ -91,6 +92,46 @@ def emailMyStateRep(request):
         context = {
             "target_url": target_url,
             "header": "Your State Representative",
+            "results": [official],
+        }
+        return HttpResponse(template.render(context, request))
+    else:
+        template = loader.get_template("locateme.html")
+        context = {}
+        return HttpResponse(template.render(context, request))
+
+
+@require_http_methods(["GET", "POST"])
+def callMyUSRep(request):
+    if request.method == "POST":
+        lat = request.POST["lat"]
+        lon = request.POST["lon"]
+        official = getUSRep(lat, lon)
+        target_url = f"tel:{official['office_phone']}"
+        template = loader.get_template("redirect.html")
+        context = {
+            "target_url": target_url,
+            "header": "Your US Representative",
+            "results": [official],
+        }
+        return HttpResponse(template.render(context, request))
+    else:
+        template = loader.get_template("locateme.html")
+        context = {}
+        return HttpResponse(template.render(context, request))
+
+
+@require_http_methods(["GET", "POST"])
+def emailMyUSRep(request):
+    if request.method == "POST":
+        lat = request.POST["lat"]
+        lon = request.POST["lon"]
+        official = getUSRep(lat, lon)
+        target_url = f"mailto:{official['email']}"
+        template = loader.get_template("redirect.html")
+        context = {
+            "target_url": target_url,
+            "header": "Your US Representative",
             "results": [official],
         }
         return HttpResponse(template.render(context, request))

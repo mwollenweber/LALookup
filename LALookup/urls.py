@@ -23,6 +23,7 @@ urlpatterns = [
     path("emailMyMayor", views.emailMyMayor),
     path("callMyMayor", views.callMyMayor),
     path("stateLegislators", views.LookupStateLegislators),
+    path("callMyUSRep", views.callMyUSRep),
     path("locateMe", views.locateMe),
     path("test", views.test),
     # API
