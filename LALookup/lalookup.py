@@ -1,6 +1,7 @@
 import geopandas as gp
 import csv
 import logging
+import shapefile
 from shapely.geometry import Point
 from django.conf import settings
 from geopy.geocoders import Nominatim
@@ -37,10 +38,22 @@ def within_shape(df, shapes):
     return in_shape
 
 
+def findGeo(lat, lon, shape):
+    for geo in shape.geometry:
+        if geo.contains(Point(lon, lat)):
+            return geo
+
 def findShapeIndex(lat, lon, shape):
     for i in range(0, len(shape.geometry)):
         if shape.geometry[i].contains(Point(lon, lat)):
             return i
+
+
+def getCongressDistrict(lat, lon):
+    shape = gp.read_file(settings.CONGRESSMAP)
+    index = findShapeIndex(lat, lon, shape)
+    return index
+
 
 
 def getHouseDistrict(lat, lon):
@@ -102,21 +115,18 @@ def getMayor(lat, lon):
             officeTitle__icontains="Mayor", officeDescription__icontains=city
         ).first()
         return mayor.todict()
-    except Legislator.DoesNotExist as e:
-        logger.error("ERROR: Governor not found {e}")
-        return None
     except AttributeError as e:
         logger.error("mayor not found")
         return None
 
 
 def getGovernor(lat, lon):
-    location = (
-        Nominatim(user_agent="LALookup", timeout=GEO_TIMEOUT)
-        .reverse(f"{lat}, {lon}")
-        .raw
-    )
-    state = location["address"]["state"]
+    # location = (
+    #     Nominatim(user_agent="LALookup", timeout=GEO_TIMEOUT)
+    #     .reverse(f"{lat}, {lon}")
+    #     .raw
+    # )
+    # state = location["address"]["state"]
     gov = SoSElectedOfficial.objects.get(officeTitle="Governor")
     return gov.todict()
 
@@ -155,6 +165,8 @@ def getElectedOfficials(lat, lon):
     elected_officials.append(getGovernor(lat, lon))
     elected_officials.append(getMayor(lat, lon))
     elected_officials += getSenators(lat, lon)
+    congress_district = getCongressDistrict(lat, lon)
+    elected_officials.append({"congress_district": congress_district})
     return elected_officials
 
 

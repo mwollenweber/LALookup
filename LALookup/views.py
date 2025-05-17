@@ -45,7 +45,7 @@ def addressSearch(request):
         "status": "success",
         "address": address,
         "lat": lat,
-        "long": lon,
+        "lon": lon,
         "parish": latlon2Parish(lat, lon),
         "state": "LA",
         "results": getElectedOfficials(lat, lon),
@@ -227,7 +227,7 @@ def apitest(request):
         "status": "success",
         "address": address,
         "lat": lat,
-        "long": lon,
+        "lon": lon,
         "parish": latlon2Parish(lat, lon),
         "results": getElectedOfficials(lat, lon),
     }
