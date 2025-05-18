@@ -42,6 +42,8 @@ ALLOWED_HOSTS = [
     "localhost",
     "127.0.0.1",
     "lalookup.insomniac.tech",
+    "lookup.defendlouisiana.org",
+    "lalookup.defendlouisiana.org",
     "lalookup-530602149581.herokuapp.com",
 ]
 

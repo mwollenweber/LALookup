@@ -2,15 +2,18 @@
 Django App to Lookup Louisiana Officials
 
 ## See it Work (if you're in Louisiana)
-1. https://lalookup-530602149581.herokuapp.com/locateMe
+1. https://lalookup-530602149581.herokuapp.com/
 2. https://lalookup-530602149581.herokuapp.com/callMyStateRep
 3. https://lalookup-530602149581.herokuapp.com/emailMyStateRep
 4. https://lalookup-530602149581.herokuapp.com/callMyStateSenator
 5. https://lalookup-530602149581.herokuapp.com/emailMyStateSenator
-6. https://lalookup-530602149581.herokuapp.com/callMyMayor
-7. https://lalookup-530602149581.herokuapp.com/emailMyMayor
-8. https://lalookup-530602149581.herokuapp.com/callMyGovernor
-9. https://lalookup-530602149581.herokuapp.com/emailMyGovernor
+6. https://lalookup-530602149581.herokuapp.com/callMyGov
+7. https://lalookup-530602149581.herokuapp.com/emailMyGov
+8. https://lalookup-530602149581.herokuapp.com/callMyUSRep
+9. https://lalookup-530602149581.herokuapp.com/callMyMayor
+10. https://lalookup-530602149581.herokuapp.com/emailMyMayor
+11. https://lalookup-530602149581.herokuapp.com/api/test
+12. https://lalookup-530602149581.herokuapp.com/test
 
 
 
