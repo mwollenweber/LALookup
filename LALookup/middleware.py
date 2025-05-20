@@ -50,6 +50,7 @@ class SaveRequest:
             #body_response=str(response.content),
             #body_request=str(request.body),
             referrer=request.META.get('HTTP_REFERER'),
+            user_agent=request.META.get('HTTP_USER_AGENT'),
             lat=lat,
             lon=lon,
             addressText=addressText,

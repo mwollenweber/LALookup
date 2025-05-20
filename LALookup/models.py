@@ -186,6 +186,7 @@ class Request(models.Model):
     lon = models.FloatField(null=True, blank=True)
     addressText = models.TextField(null=True, blank=True)
     referrer = models.TextField(null=True)
+    user_agent = models.TextField(null=True, blank=True)
 
     def __str__(self):
         return f"[{self.id}]: {self.remote_address} {self.method} {self.endpoint}"
