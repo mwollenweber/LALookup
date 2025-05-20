@@ -293,7 +293,6 @@ def LookupStateLegislators(request):
 
 @require_http_methods(["POST"])
 def renderResposne(request):
-
     if (
         "addressText" in request.POST.keys()
         and "lat" in request.POST.keys()
@@ -315,3 +314,26 @@ def renderResposne(request):
         "results": results,
     }
     return HttpResponse(template.render(context, request))
+
+
+@require_http_methods(['GET'])
+def sitemap(request):
+    base_url = f"https://{request.get_host()}"
+    urls = [
+        f"{base_url}/locateMe\n",
+        f"{base_url}/callMyStateRep\n",
+        f"{base_url}/emailMyStateRep\n",
+        f"{base_url}/callMyStateSenator\n",
+        f"{base_url}/emailMyStateSenator\n",
+        f"{base_url}/callMyGovernor\n",
+        f"{base_url}/emailMyGovernor\n",
+        f"{base_url}/callMyGov\n",
+        f"{base_url}/emailMyGov\n",
+        f"{base_url}/callMyMayor\n",
+        f"{base_url}/emailMyMayor\n",
+        f"{base_url}/callMyUSRep\n",
+        f"{base_url}/emailMyUSRep\n",
+        f"{base_url}/api/adddressSearch\n",
+    ]
+    return HttpResponse(urls, content_type='text/plain')
+
