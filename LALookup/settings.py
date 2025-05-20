@@ -1,6 +1,7 @@
 import os
 from warnings import warn
 from pathlib import Path
+from django.core.management.utils import get_random_secret_key
 
 
 CELERY_BROKER_URL = "redis://localhost:6379/0"
@@ -32,18 +33,15 @@ SENATEMEMBERBASEURL = f"https://senate.la.gov/smembers?ID="
 TEMPLATE_DIRS = [f"{BASE_DIR}/LALookup/templates/"]
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-4)bmlitq^^0jk@^(tkj7kfd#81*nde-$gxplco(r3*q@6xc66e"
+SECRET_KEY = os.getenv("SECRET_KEY") or get_random_secret_key()
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 
 ALLOWED_HOSTS = [
     "localhost",
-    "127.0.0.1",
-    "lalookup.insomniac.tech",
     "lookup.defendlouisiana.org",
-    "lalookup.defendlouisiana.org",
     "lalookup-530602149581.herokuapp.com",
 ]
 

@@ -316,7 +316,7 @@ def renderResposne(request):
     return HttpResponse(template.render(context, request))
 
 
-@require_http_methods(['GET'])
+@require_http_methods(["GET"])
 def sitemap(request):
     base_url = f"https://{request.get_host()}"
     urls = [
@@ -335,5 +335,4 @@ def sitemap(request):
         f"{base_url}/emailMyUSRep\n",
         f"{base_url}/api/adddressSearch\n",
     ]
-    return HttpResponse(urls, content_type='text/plain')
-
+    return HttpResponse(urls, content_type="text/plain")
