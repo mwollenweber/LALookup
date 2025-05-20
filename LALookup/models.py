@@ -169,3 +169,34 @@ class SoSElectedOfficial(Person):
             "state": "LA",
             "id": self.id,
         }
+
+
+class Request(models.Model):
+    endpoint = models.CharField(max_length=100, null=True) # The url the user requested
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True) # User that made request, if authenticated
+    response_code = models.PositiveSmallIntegerField() # Response status code
+    method = models.CharField(max_length=10, null=True)  # Request method
+    remote_address = models.CharField(max_length=20, null=True) # IP address of user
+    exec_time = models.IntegerField(null=True) # Time taken to create the response
+    date = models.DateTimeField(auto_now=True) # Date and time of request
+    body_response = models.TextField(blank=True) # Response data
+    body_request = models.TextField(blank=True) # Request data
+    lat = models.FloatField(null=True, blank=True)
+    lon = models.FloatField(null=True, blank=True)
+    addressText = models.TextField(null=True, blank=True)
+    referrer = models.TextField(null=True)
+
+
+class Log(models.Model):
+    endpoint = models.CharField(max_length=100, null=True)
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    response_code = models.PositiveSmallIntegerField()
+    method = models.CharField(max_length=10, null=True)
+    remote_address = models.CharField(max_length=20, null=True)
+    lat = models.FloatField(null=True, blank=True)
+    lon = models.FloatField(null=True, blank=True)
+    addressText = models.TextField(null=True, blank=True)
+    referrer = models.TextField(null=True)
+    official = models.ForeignKey(SoSElectedOfficial, on_delete=models.SET_NULL, null=True, blank=True)
+    legislator = models.ForeignKey(Legislator, on_delete=models.SET_NULL, null=True, blank=True)
+
