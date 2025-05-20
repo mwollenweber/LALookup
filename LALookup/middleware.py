@@ -14,6 +14,10 @@ class SaveRequest:
             '/'
         ]
 
+        self.exclude_prefixes = [
+            '/admin'
+        ]
+
     def __call__(self, request):
         _t = time.time() # Calculated execution time.
         response = self.get_response(request) # Get response from view function.
@@ -23,6 +27,9 @@ class SaveRequest:
         # (Remove these two lines below to log everything)
         # if not list(filter(request.get_full_path().startswith, self.prefixs)):
         #     return response
+
+        if list(filter(request.get_full_path().startswith, self.exclude_prefixes)):
+            return response
 
         if request.method == "POST":
             lat = request.POST['lat'] if 'lat' in request.POST else None

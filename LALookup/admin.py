@@ -1,5 +1,23 @@
 from django.contrib import admin
-from .models import Legislator, SoSElectedOfficial
+from .models import Legislator, SoSElectedOfficial, Request
 
-admin.site.register(Legislator)
-admin.site.register(SoSElectedOfficial)
+
+class RequestAdmin(admin.ModelAdmin):
+    model = Request
+    search_fields = ['remote_address', 'response_code', 'endpoint']
+    title = [Request.id, Request.method, Request.response_code]
+
+
+class LegislatorAdmin(admin.ModelAdmin):
+    model = Legislator
+    search_fields = ['first_name', 'last_name']
+
+
+class ElectedOfficialAdmin(admin.ModelAdmin):
+    model = SoSElectedOfficial
+    search_fields = ['first_name', 'last_name']
+
+
+admin.site.register(Legislator, LegislatorAdmin)
+admin.site.register(SoSElectedOfficial, ElectedOfficialAdmin)
+admin.site.register(Request, RequestAdmin)

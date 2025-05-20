@@ -172,6 +172,7 @@ class SoSElectedOfficial(Person):
 
 
 class Request(models.Model):
+    id = models.AutoField(primary_key=True)
     endpoint = models.CharField(max_length=100, null=True) # The url the user requested
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True) # User that made request, if authenticated
     response_code = models.PositiveSmallIntegerField() # Response status code
@@ -186,8 +187,12 @@ class Request(models.Model):
     addressText = models.TextField(null=True, blank=True)
     referrer = models.TextField(null=True)
 
+    def __str__(self):
+        return f"[{self.id}]: {self.remote_address} {self.method} {self.endpoint}"
+
 
 class Log(models.Model):
+    id = models.AutoField(primary_key=True)
     endpoint = models.CharField(max_length=100, null=True)
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     response_code = models.PositiveSmallIntegerField()
