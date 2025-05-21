@@ -28,6 +28,7 @@ urlpatterns = [
     path("callMyUSRep", views.callMyUSRep),
     path("locateMe", views.locateMe),
     path("test", views.test),
+    path("testBad", views.testBad),
     path("sitemap.txt", views.sitemap),
     # API
     path("api/test", views.apitest),

@@ -5,7 +5,7 @@ from django.views.decorators.http import require_http_methods
 from django.template import loader
 from .lalookup import (
     address2latlon,
-    latlon2Parish,
+    address2location,
     latlon2addr,
     getStateRep,
     getStateSenator,
@@ -13,6 +13,8 @@ from .lalookup import (
     getMayor,
     getElectedOfficials,
     getUSRep,
+    getLocation,
+    locationIsValid,
 )
 
 logger = logging.getLogger(__name__)
@@ -41,14 +43,14 @@ def addressSearch(request):
                 "message": f"You must provide an address or lat+lon",
             }
         )
-
+    location = getLocation(lat, lon)
     response = {
         "status": "success",
         "address": address,
         "lat": lat,
         "lon": lon,
-        "parish": latlon2Parish(lat, lon),
-        "state": "LA",
+        "parish": location["address"]["county"],
+        "state": location["address"]["state"],
         "results": getElectedOfficials(lat, lon),
     }
     return JsonResponse(response)
@@ -66,7 +68,10 @@ def callMyStateRep(request):
     if request.method == "POST":
         lat = request.POST["lat"]
         lon = request.POST["lon"]
-        official = getStateRep(lat, lon)
+        location = getLocation(lat, lon)
+        if not locationIsValid(location):
+            return invalidState(request)
+        official = getStateRep(location)
         target_url = f"tel:{official['office_phone']}"
         template = loader.get_template("redirect.html")
         context = {
@@ -86,7 +91,10 @@ def emailMyStateRep(request):
     if request.method == "POST":
         lat = request.POST["lat"]
         lon = request.POST["lon"]
-        official = getStateRep(lat, lon)
+        location = getLocation(lat, lon)
+        if not locationIsValid(location):
+            return invalidState(request)
+        official = getStateRep(location)
         target_url = f"mailto:{official['email']}"
         template = loader.get_template("redirect.html")
         context = {
@@ -106,7 +114,10 @@ def callMyUSRep(request):
     if request.method == "POST":
         lat = request.POST["lat"]
         lon = request.POST["lon"]
-        official = getUSRep(lat, lon)
+        location = getLocation(lat, lon)
+        if not locationIsValid(location):
+            return invalidState(request)
+        official = getUSRep(location)
         target_url = f"tel:{official['office_phone']}"
         template = loader.get_template("redirect.html")
         context = {
@@ -126,7 +137,10 @@ def emailMyUSRep(request):
     if request.method == "POST":
         lat = request.POST["lat"]
         lon = request.POST["lon"]
-        official = getUSRep(lat, lon)
+        location = getLocation(lat, lon)
+        if not locationIsValid(location):
+            return invalidState(request)
+        official = getUSRep(location)
         target_url = f"mailto:{official['email']}"
         template = loader.get_template("redirect.html")
         context = {
@@ -146,7 +160,10 @@ def callMyStateSenator(request):
     if request.method == "POST":
         lat = request.POST["lat"]
         lon = request.POST["lon"]
-        official = getStateSenator(lat, lon)
+        location = getLocation(lat, lon)
+        if not locationIsValid(location):
+            return invalidState(request)
+        official = getStateSenator(location)
         target_url = f"tel:{official['office_phone']}"
         template = loader.get_template("redirect.html")
         context = {
@@ -166,7 +183,10 @@ def emailMyStateSenator(request):
     if request.method == "POST":
         lat = request.POST["lat"]
         lon = request.POST["lon"]
-        official = getStateSenator(lat, lon)
+        location = getLocation(lat, lon)
+        if not locationIsValid(location):
+            return invalidState(request)
+        official = getStateSenator(location)
         target_url = f"mailto:{official['email']}"
         template = loader.get_template("redirect.html")
         context = {
@@ -186,7 +206,10 @@ def callMyMayor(request):
     if request.method == "POST":
         lat = request.POST["lat"]
         lon = request.POST["lon"]
-        official = getMayor(lat, lon)
+        location = getLocation(lat, lon)
+        if not locationIsValid(location):
+            return invalidState(request)
+        official = getMayor(location)
         target_url = f"tel:{official['office_phone']}"
         template = loader.get_template("redirect.html")
         context = {
@@ -206,7 +229,10 @@ def emailMyMayor(request):
     if request.method == "POST":
         lat = request.POST["lat"]
         lon = request.POST["lon"]
-        official = getMayor(lat, lon)
+        location = getLocation(lat, lon)
+        if not locationIsValid(location):
+            return invalidState(request)
+        official = getMayor(location)
         target_url = f"mailto:{official['email']}"
         template = loader.get_template("redirect.html")
         context = {
@@ -226,7 +252,10 @@ def callMyGovernor(request):
     if request.method == "POST":
         lat = request.POST["lat"]
         lon = request.POST["lon"]
-        official = getGovernor(lat, lon)
+        location = getLocation(lat, lon)
+        if not locationIsValid(location):
+            return invalidState(request)
+        official = getGovernor(location)
         target_url = f"tel:{official['office_phone']}"
         template = loader.get_template("redirect.html")
         context = {
@@ -246,7 +275,10 @@ def emailMyGovernor(request):
     if request.method == "POST":
         lat = request.POST["lat"]
         lon = request.POST["lon"]
-        official = getGovernor(lat, lon)
+        location = getLocation(lat, lon)
+        if not locationIsValid(location):
+            return invalidState(request)
+        official = getGovernor(location)
         target_url = f"mailto:{official['email']}"
         template = loader.get_template("redirect.html")
         context = {
@@ -264,13 +296,14 @@ def emailMyGovernor(request):
 def apitest(request):
     address = "4521 Magazine St, 70115"
     lat, lon = address2latlon(address)
+    location = getLocation(lat, lon)
     r = {
         "status": "success",
         "address": address,
         "lat": lat,
         "lon": lon,
-        "parish": latlon2Parish(lat, lon),
-        "results": getElectedOfficials(lat, lon),
+        "parish": location.raw["address"]["county"],
+        "results": getElectedOfficials(location),
     }
     return JsonResponse(r)
 
@@ -278,9 +311,29 @@ def apitest(request):
 def test(request):
     address = "4521 Magazine St, 70115"
     lat, lon = address2latlon(address)
+    location = getLocation(lat, lon)
+    if not locationIsValid(location):
+        return invalidState(request)
     logger.info(f"render body: {request.body}")
     template = loader.get_template("contact.html")
-    results = getElectedOfficials(lat, lon)
+    results = getElectedOfficials(location)
+    for r in results:
+        logger.debug(f"test result: {r}")
+    context = {"results": results}
+    return HttpResponse(template.render(context, request))
+
+
+def testBad(request):
+    # this looks stupid... but... it works
+    address = "9600 N. MoPac Expressway,  78759"
+    lat, lon = address2latlon(address)
+    location = getLocation(lat, lon)
+
+    if not locationIsValid(location):
+        return invalidState(request)
+    logger.info(f"render body: {request.body}")
+    template = loader.get_template("contact.html")
+    results = getElectedOfficials(location)
     for r in results:
         logger.debug(f"test result: {r}")
     context = {"results": results}
@@ -308,11 +361,21 @@ def renderResposne(request):
         return JsonResponse({"status": "error"})
 
     logger.info(f"render body: {request.body}")
-    results = getElectedOfficials(lat, lon)
+    location = getLocation(lat, lon)
+    if not locationIsValid(location):
+        return invalidState(request)
+    results = getElectedOfficials(location)
     template = loader.get_template("contact.html")
     context = {
         "results": results,
     }
+    return HttpResponse(template.render(context, request))
+
+
+@require_http_methods(["GET", "POST"])
+def invalidState(request):
+    template = loader.get_template("location-not-supported.html")
+    context = {}
     return HttpResponse(template.render(context, request))
 
 

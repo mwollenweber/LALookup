@@ -5,10 +5,22 @@ from shapely.geometry import Point
 from django.conf import settings
 from geopy.geocoders import Nominatim
 from .models import Legislator, SoSElectedOfficial
-
+from .settings import SUPPORTED_STATES, GEO_TIMEOUT
 
 logger = logging.getLogger(__name__)
-GEO_TIMEOUT = 5
+
+
+def locationIsValid(location):
+    if "address" in location.raw:
+        state = location.raw["address"]["state"]
+        return state in SUPPORTED_STATES
+    return False
+
+
+def getLocation(lat, lon):
+    geolocator = Nominatim(user_agent="LALookup", timeout=GEO_TIMEOUT)
+    location = geolocator.reverse(f"{lat}, {lon}")
+    return location
 
 
 def latlon2Parish(lat, lon):
@@ -24,15 +36,12 @@ def latlon2addr(lat, lon):
 
 
 def address2latlon(address):
-    # Nominatim Uses OpenStreet Map
     gc = Nominatim(user_agent="LALookup", timeout=GEO_TIMEOUT).geocode(address)
     return float(gc.latitude), float(gc.longitude)
 
 
-def findGeo(lat, lon, shape):
-    for geo in shape.geometry:
-        if geo.contains(Point(lon, lat)):
-            return geo
+def address2location(address):
+    return Nominatim(user_agent="LALookup", timeout=GEO_TIMEOUT).geocode(address)
 
 
 def findShapeIndex(lat, lon, shape):
@@ -55,58 +64,48 @@ def getCongressDistrict(lat, lon):
     return shape.OFFICE_ID[index]
 
 
-def getUSRep(lat, lon):
+def getUSRep(location):
     shape = gp.read_file(settings.CONGRESSMAP)
     shape = shape.to_crs("EPSG:4269")
-    index = findShapeIndex(lat, lon, shape)
-    print(shape.FIRSTNAME[index])
+    index = findShapeIndex(location.latitude, location.longitude, shape)
     rep = SoSElectedOfficial.objects.filter(
         officeTitle__icontains="U. S. Representative",
         first_name__icontains=shape.FIRSTNAME[index],
         last_name__icontains=shape.LASTNAME[index],
     ).first()
-    if rep:
-        return rep.todict()
+    return rep.todict() if rep else None
 
 
 def getHouseDistrict(lat, lon):
     shape = gp.read_file(settings.HOUSEMAP)
     index = findShapeIndex(lat, lon, shape)
-    if index:
-        return int(shape.SLDLST[index])
-    return -1
+    return int(shape.SLDLST[index]) if index else -1
 
 
 def getSenateDistrict(lat, lon):
     shape = gp.read_file(settings.SENATEMAP)
     index = findShapeIndex(lat, lon, shape)
-    if index:
-        return int(shape.SLDUST[index])
-    return -1
+    return int(shape.SLDUST[index]) if index else -1
 
 
-def getStateRep(lat, lon):
-    try:
-        rep = Legislator.objects.get(
-            districtnumber=getHouseDistrict(lat, lon), chamber="House"
-        )
-        return rep.todict()
-    except Legislator.DoesNotExist as e:
-        logger.error("ERROR: Rep not found {e}")
-        return None
+def getStateRep(location):
+    rep = Legislator.objects.get(
+        districtnumber=getHouseDistrict(location.latitude, location.longitude),
+        chamber="House",
+    )
+    return rep.todict() if rep else None
 
 
-def getStateSenator(lat, lon):
+def getStateSenator(location):
     sen = Legislator.objects.filter(
-        districtnumber=getSenateDistrict(lat, lon), chamber="Senate"
+        districtnumber=getSenateDistrict(location.latitude, location.longitude),
+        chamber="Senate",
     ).first()
-    if sen:
-        return sen.todict()
-    return None
+    return sen.todict() if sen else None
 
 
-def getStateLegislators(lat, lon):
-    return [getStateSenator(lat, lon), getStateRep(lat, lon)]
+def getStateLegislators(location):
+    return [getStateSenator(location), getStateRep(location)]
 
 
 def getMemberURL(chamber, member_id):
@@ -116,14 +115,9 @@ def getMemberURL(chamber, member_id):
         return f"{settings.SENATEMEMBERBASEURL}{member_id}"
 
 
-def getMayor(lat, lon):
+def getMayor(location):
     try:
-        location = (
-            Nominatim(user_agent="LALookup", timeout=GEO_TIMEOUT)
-            .reverse(f"{lat}, {lon}")
-            .raw
-        )
-        city = location["address"]["city"]
+        city = location.raw["address"]["city"]
         mayor = SoSElectedOfficial.objects.filter(
             officeTitle__icontains="Mayor", officeDescription__icontains=city
         ).first()
@@ -133,18 +127,13 @@ def getMayor(lat, lon):
         return None
 
 
-def getGovernor(lat, lon):
-    # location = (
-    #     Nominatim(user_agent="LALookup", timeout=GEO_TIMEOUT)
-    #     .reverse(f"{lat}, {lon}")
-    #     .raw
-    # )
-    # state = location["address"]["state"]
+def getGovernor(location):
+    state = location.raw["address"]["state"]
     gov = SoSElectedOfficial.objects.get(officeTitle="Governor")
-    return gov.todict()
+    return gov.todict() if gov else None
 
 
-def getOfficials(lat, lon, officeTitle):
+def getOfficials(location, officeTitle):
     official_list = []
     # location = (
     #     Nominatim(user_agent="LALookup", timeout=GEO_TIMEOUT)
@@ -158,27 +147,22 @@ def getOfficials(lat, lon, officeTitle):
     return official_list
 
 
-def getSenators(lat, lon):
+def getSenators(location):
     official_list = []
-    # state = (
-    #     Nominatim(user_agent="LALookup")
-    #     .reverse(f"{lat}, {lon}")
-    #     .raw["address"]["state"]
-    # )
     officials = SoSElectedOfficial.objects.filter(officeTitle="U. S. Senator").all()
     for off in officials:
         official_list.append(off.todict())
     return official_list
 
 
-def getElectedOfficials(lat, lon):
+def getElectedOfficials(location):
     elected_officials = []
-    elected_officials.append(getStateSenator(lat, lon))
-    elected_officials.append(getStateRep(lat, lon))
-    elected_officials.append(getGovernor(lat, lon))
-    elected_officials.append(getMayor(lat, lon))
-    elected_officials.append(getUSRep(lat, lon))
-    elected_officials += getSenators(lat, lon)
+    elected_officials.append(getStateSenator(location))
+    elected_officials.append(getStateRep(location))
+    elected_officials.append(getGovernor(location))
+    elected_officials.append(getMayor(location))
+    elected_officials.append(getUSRep(location))
+    elected_officials += getSenators(location)
     return elected_officials
 
 

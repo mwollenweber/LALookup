@@ -28,6 +28,8 @@ HOUSEMEMBERS = f"{BASE_DIR}/data/HouseMembers.csv"
 SENATEMEMBERS = f"{BASE_DIR}/data/SenateMembers.csv"
 HOUSEMEMBERBASEURL = f"https://house.louisiana.gov/H_Reps/members?ID="
 SENATEMEMBERBASEURL = f"https://senate.la.gov/smembers?ID="
+SUPPORTED_STATES = ["Louisiana"]
+GEO_TIMEOUT = 5
 
 
 TEMPLATE_DIRS = [f"{BASE_DIR}/LALookup/templates/"]
@@ -36,10 +38,11 @@ TEMPLATE_DIRS = [f"{BASE_DIR}/LALookup/templates/"]
 SECRET_KEY = os.getenv("SECRET_KEY") or get_random_secret_key()
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 
 ALLOWED_HOSTS = [
+    "127.0.0.1",
     "localhost",
     "lookup.defendlouisiana.org",
     "lalookup-530602149581.herokuapp.com",
