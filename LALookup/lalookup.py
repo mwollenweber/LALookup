@@ -155,6 +155,21 @@ def getSenators(location):
     return official_list
 
 
+def getSenatorByName(last_name):
+    official = SoSElectedOfficial.objects.filter(
+        officeTitle="U. S. Senator", last_name__icontains=last_name
+    ).first()
+    return official.todict() if official else None
+
+
+def getSenatorCassidy():
+    return getSenatorByName("Cassidy")
+
+
+def getSenatorKennedy():
+    return getSenatorByName("Kennedy")
+
+
 def getElectedOfficials(location):
     elected_officials = []
     elected_officials.append(getStateSenator(location))

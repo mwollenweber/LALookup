@@ -5,7 +5,6 @@ from django.views.decorators.http import require_http_methods
 from django.template import loader
 from .lalookup import (
     address2latlon,
-    address2location,
     latlon2addr,
     getStateRep,
     getStateSenator,
@@ -15,9 +14,37 @@ from .lalookup import (
     getUSRep,
     getLocation,
     locationIsValid,
+    getSenatorCassidy,
+    getSenatorKennedy,
 )
 
 logger = logging.getLogger(__name__)
+
+
+@require_http_methods(["GET"])
+def sitemap(request):
+    base_url = f"https://{request.get_host()}"
+    urls = [
+        f"{base_url}/locateMe\n",
+        f"{base_url}/callMyStateRep\n",
+        f"{base_url}/emailMyStateRep\n",
+        f"{base_url}/callMyStateSenator\n",
+        f"{base_url}/emailMyStateSenator\n",
+        f"{base_url}/callMyGovernor\n",
+        f"{base_url}/emailMyGovernor\n",
+        f"{base_url}/callMyGov\n",
+        f"{base_url}/emailMyGov\n",
+        f"{base_url}/callMyMayor\n",
+        f"{base_url}/emailMyMayor\n",
+        f"{base_url}/callMyUSRep\n",
+        f"{base_url}/emailMyUSRep\n",
+        f"{base_url}/api/adddressSearch\n",
+        f"{base_url}/callSenatorCassidy\n",
+        f"{base_url}/callSenatorKennedy\n",
+        f"{base_url}/emailSenatorCassidy\n",
+        f"{base_url}/emailSenatorKennedy\n",
+    ]
+    return HttpResponse(urls, content_type="text/plain")
 
 
 @require_http_methods(["POST", "GET"])
@@ -380,22 +407,52 @@ def invalidState(request):
 
 
 @require_http_methods(["GET"])
-def sitemap(request):
-    base_url = f"https://{request.get_host()}"
-    urls = [
-        f"{base_url}/locateMe\n",
-        f"{base_url}/callMyStateRep\n",
-        f"{base_url}/emailMyStateRep\n",
-        f"{base_url}/callMyStateSenator\n",
-        f"{base_url}/emailMyStateSenator\n",
-        f"{base_url}/callMyGovernor\n",
-        f"{base_url}/emailMyGovernor\n",
-        f"{base_url}/callMyGov\n",
-        f"{base_url}/emailMyGov\n",
-        f"{base_url}/callMyMayor\n",
-        f"{base_url}/emailMyMayor\n",
-        f"{base_url}/callMyUSRep\n",
-        f"{base_url}/emailMyUSRep\n",
-        f"{base_url}/api/adddressSearch\n",
-    ]
-    return HttpResponse(urls, content_type="text/plain")
+def callSenatorCassidy(request):
+    official = getSenatorCassidy()
+    target_url = f"tel:{official['office_phone']}"
+    template = loader.get_template("redirect.html")
+    context = {
+        "target_url": target_url,
+        "header": "Your United States Senator",
+        "results": [official],
+    }
+    return HttpResponse(template.render(context, request))
+
+
+@require_http_methods(["GET"])
+def callSenatorKennedy(request):
+    official = getSenatorKennedy()
+    target_url = f"tel:{official['office_phone']}"
+    template = loader.get_template("redirect.html")
+    context = {
+        "target_url": target_url,
+        "header": "Your United States Senator",
+        "results": [official],
+    }
+    return HttpResponse(template.render(context, request))
+
+
+@require_http_methods(["GET"])
+def emailSenatorCassidy(request):
+    official = getSenatorCassidy()
+    target_url = f"{official['mailform']}"
+    template = loader.get_template("redirect.html")
+    context = {
+        "target_url": target_url,
+        "header": "Your United States Senator",
+        "results": [official],
+    }
+    return HttpResponse(template.render(context, request))
+
+
+@require_http_methods(["GET"])
+def emailSenatorKennedy(request):
+    official = getSenatorKennedy()
+    target_url = f"{official['mailform']}"
+    template = loader.get_template("redirect.html")
+    context = {
+        "target_url": target_url,
+        "header": "Your United States Senator",
+        "results": [official],
+    }
+    return HttpResponse(template.render(context, request))
