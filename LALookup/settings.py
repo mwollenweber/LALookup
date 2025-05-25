@@ -38,7 +38,7 @@ TEMPLATE_DIRS = [f"{BASE_DIR}/LALookup/templates/"]
 SECRET_KEY = os.getenv("SECRET_KEY") or get_random_secret_key()
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv("DEBUG") or False
 
 
 ALLOWED_HOSTS = [
