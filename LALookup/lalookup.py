@@ -4,11 +4,19 @@ import logging
 from shapely.geometry import Point
 from django.conf import settings
 from geopy.geocoders import Nominatim
-from .models import Legislator, SoSElectedOfficial
+from .models import Legislator, SoSElectedOfficial, CampaignPrompt
 from .settings import SUPPORTED_STATES, GEO_TIMEOUT
 
 
 logger = logging.getLogger(__name__)
+
+
+def getPrompt(request):
+    if "campaignID" in request.GET.keys():
+        campaignID = request.GET["campaignID"]
+        prompt = CampaignPrompt.objects.filter(campaign=campaignID).first()
+        return prompt.text if prompt else None
+    return None
 
 
 def locationIsValid(location):

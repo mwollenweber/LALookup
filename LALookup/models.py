@@ -1,3 +1,4 @@
+import uuid
 from django.db import models
 
 
@@ -171,6 +172,45 @@ class SoSElectedOfficial(Person):
         }
 
 
+class Client(models.Model):
+    id = models.AutoField(primary_key=True)
+    company_name = models.CharField(
+        max_length=200, blank=True, null=True, db_index=True
+    )
+    first_name = models.CharField(max_length=200, blank=True, null=True, db_index=True)
+    last_name = models.CharField(max_length=200, blank=True, null=True, db_index=True)
+    email = models.CharField(max_length=200, blank=True, null=True, db_index=True)
+    phone = models.CharField(max_length=200, blank=True, null=True, db_index=True)
+    website = models.CharField(max_length=200, blank=True, null=True, db_index=True)
+    domain = models.CharField(max_length=200, blank=True, null=True, db_index=True)
+
+    def __str__(self):
+        return self.company_name
+
+
+class Campaign(models.Model):
+    id = models.CharField(
+        primary_key=True,
+        max_length=40,
+        db_index=True,
+        blank=True,
+        default=uuid.uuid4().hex,
+    )
+    client = models.ForeignKey(Client, on_delete=models.CASCADE)
+    campaign_name = models.CharField(
+        max_length=200, blank=True, null=True, db_index=True
+    )
+    allowed_referrer_domain = models.CharField(
+        max_length=200, blank=True, null=True, db_index=True
+    )
+    hit_count = models.IntegerField(default=0, db_index=True)
+    created = models.DateTimeField(auto_now=True)
+    updated = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.campaign_name
+
+
 class Request(models.Model):
     id = models.AutoField(primary_key=True)
     endpoint = models.CharField(max_length=100, null=True)  # The url the user requested
@@ -189,25 +229,20 @@ class Request(models.Model):
     addressText = models.TextField(null=True, blank=True)
     referrer = models.TextField(null=True)
     user_agent = models.TextField(null=True, blank=True)
+    campaign_id = models.CharField(max_length=40, db_index=True, blank=True, null=True)
 
     def __str__(self):
         return f"[{self.id}]: {self.remote_address} {self.method} {self.endpoint}"
 
 
-class Log(models.Model):
+class CampaignPrompt(models.Model):
     id = models.AutoField(primary_key=True)
-    endpoint = models.CharField(max_length=100, null=True)
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
-    response_code = models.PositiveSmallIntegerField()
-    method = models.CharField(max_length=10, null=True)
-    remote_address = models.CharField(max_length=20, null=True)
-    lat = models.FloatField(null=True, blank=True)
-    lon = models.FloatField(null=True, blank=True)
-    addressText = models.TextField(null=True, blank=True)
-    referrer = models.TextField(null=True)
-    official = models.ForeignKey(
-        SoSElectedOfficial, on_delete=models.SET_NULL, null=True, blank=True
-    )
-    legislator = models.ForeignKey(
-        Legislator, on_delete=models.SET_NULL, null=True, blank=True
-    )
+    campaign = models.ForeignKey(Campaign, on_delete=models.SET_NULL, null=True)
+    name = models.CharField(max_length=200, blank=True, null=True, db_index=True)
+    created = models.DateTimeField(auto_now=True)
+    updated = models.DateTimeField(auto_now=True)
+    text = models.TextField(blank=True, null=True)
+    hit_count = models.IntegerField(default=0, db_index=True)
+
+    def __str__(self):
+        return f"{self.campaign.client.company_name}: {self.name}"
