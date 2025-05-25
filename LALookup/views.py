@@ -23,8 +23,6 @@ from .lalookup import (
 logger = logging.getLogger(__name__)
 
 
-
-
 @require_http_methods(["GET"])
 def sitemap(request):
     base_url = f"https://{request.get_host()}"
@@ -109,6 +107,7 @@ def callMyStateRep(request):
             "target_url": target_url,
             "header": "Your State Representative",
             "results": [official],
+            "campaign_prompt": getPrompt(request),
         }
         return HttpResponse(template.render(context, request))
     else:
@@ -132,6 +131,7 @@ def emailMyStateRep(request):
             "target_url": target_url,
             "header": "Your State Representative",
             "results": [official],
+            "campaign_prompt": getPrompt(request),
         }
         return HttpResponse(template.render(context, request))
     else:
@@ -155,6 +155,7 @@ def callMyUSRep(request):
             "target_url": target_url,
             "header": "Your US Representative",
             "results": [official],
+            "campaign_prompt": getPrompt(request),
         }
         return HttpResponse(template.render(context, request))
     else:
@@ -178,6 +179,7 @@ def emailMyUSRep(request):
             "target_url": target_url,
             "header": "Your US Representative",
             "results": [official],
+            "campaign_prompt": getPrompt(request),
         }
         return HttpResponse(template.render(context, request))
     else:
@@ -201,6 +203,7 @@ def callMyStateSenator(request):
             "target_url": target_url,
             "header": "Your State Senator",
             "results": [official],
+            "campaign_prompt": getPrompt(request),
         }
         return HttpResponse(template.render(context, request))
     else:
@@ -224,6 +227,7 @@ def emailMyStateSenator(request):
             "target_url": target_url,
             "header": "Your State Senator",
             "results": [official],
+            "campaign_prompt": getPrompt(request),
         }
         return HttpResponse(template.render(context, request))
     else:
@@ -247,6 +251,7 @@ def callMyMayor(request):
             "target_url": target_url,
             "header": "Your Mayor",
             "results": [official],
+            "campaign_prompt": getPrompt(request),
         }
         return HttpResponse(template.render(context, request))
     else:
@@ -270,6 +275,7 @@ def emailMyMayor(request):
             "target_url": target_url,
             "header": "Your Mayor",
             "results": [official],
+            "campaign_prompt": getPrompt(request),
         }
         return HttpResponse(template.render(context, request))
     else:
@@ -293,6 +299,7 @@ def callMyGovernor(request):
             "target_url": target_url,
             "header": "Your Governor",
             "results": [official],
+            "campaign_prompt": getPrompt(request),
         }
         return HttpResponse(template.render(context, request))
     else:
@@ -316,6 +323,7 @@ def emailMyGovernor(request):
             "target_url": target_url,
             "header": "Your Governor",
             "results": [official],
+            "campaign_prompt": getPrompt(request),
         }
         return HttpResponse(template.render(context, request))
     else:
@@ -417,6 +425,7 @@ def callSenatorCassidy(request):
         "target_url": target_url,
         "header": "Your United States Senator",
         "results": [official],
+        "campaign_prompt": getPrompt(request),
     }
     return HttpResponse(template.render(context, request))
 
@@ -444,6 +453,7 @@ def emailSenatorCassidy(request):
         "target_url": target_url,
         "header": "Your United States Senator",
         "results": [official],
+        "campaign_prompt": getPrompt(request),
     }
     return HttpResponse(template.render(context, request))
 
@@ -457,5 +467,6 @@ def emailSenatorKennedy(request):
         "target_url": target_url,
         "header": "Your United States Senator",
         "results": [official],
+        "campaign_prompt": getPrompt(request),
     }
     return HttpResponse(template.render(context, request))
