@@ -7,16 +7,17 @@ from geopy.geocoders import Nominatim
 from .models import Legislator, SoSElectedOfficial, CampaignPrompt
 from .settings import SUPPORTED_STATES, GEO_TIMEOUT
 
-
 logger = logging.getLogger(__name__)
 
 
 def getPrompt(request):
-    if "campaignID" in request.GET.keys():
-        campaignID = request.GET["campaignID"]
-        prompt = CampaignPrompt.objects.filter(campaign=campaignID).first()
-        return prompt.text if prompt else None
-    return None
+    try:
+        prompt = CampaignPrompt.objects.filter(
+            campaign=request.GET["campaignID"]
+        ).first()
+        return prompt.text.splitlines()
+    except AttributeError:
+        return None
 
 
 def locationIsValid(location):

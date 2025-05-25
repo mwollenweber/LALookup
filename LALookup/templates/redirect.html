@@ -30,8 +30,9 @@
               </div>
               <div class="card-body">
                 <blockquote class="blockquote mb-0">
-                  <p>{{ campaign_prompt }}</p>
-
+                    {%  for line in campaign_prompt %}
+                        <p> {{ line }} </p>
+                    {%  endfor %}
                 </blockquote>
               </div>
             </div>
