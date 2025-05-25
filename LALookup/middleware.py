@@ -1,5 +1,5 @@
 import time
-from .models import Request
+from .models import Request, Campaign
 
 
 class SaveRequest:
@@ -33,11 +33,17 @@ class SaveRequest:
             addressText = (
                 request.POST["addressText"] if "addressText" in request.POST else None
             )
+            campaign_id = (
+                request.POST["campaignId"] if "campaignId" in request.GET else None
+            )
         elif request.method == "GET":
             lat = request.GET["lat"] if "lat" in request.GET else None
             lon = request.GET["lon"] if "lon" in request.GET else None
             addressText = (
                 request.GET["addressText"] if "addressText" in request.GET else None
+            )
+            campaign_id = (
+                request.GET["campaignId"] if "campaignId" in request.GET else None
             )
 
         # Create instance of our model and assign values
@@ -54,14 +60,15 @@ class SaveRequest:
             lat=lat,
             lon=lon,
             addressText=addressText,
+            campaign_id=campaign_id,
         )
-
-        # Assign user to log if it's not an anonymous user
-        # if not request.user.is_anonymous:
-        #     request_log.user = request.user
-
-        # Save log in db
         request_log.save()
+
+        campaign = Campaign.objects.filter(campaign_id=campaign_id).first()
+        if campaign:
+            campaign.hit_count += 1
+            campaign.save()
+
         return response
 
     # get clients ip address

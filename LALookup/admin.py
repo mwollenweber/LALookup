@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Legislator, SoSElectedOfficial, Request
+from .models import Legislator, SoSElectedOfficial, Request, Client, Campaign
 
 
 class RequestAdmin(admin.ModelAdmin):
@@ -18,6 +18,18 @@ class ElectedOfficialAdmin(admin.ModelAdmin):
     search_fields = ["first_name", "last_name"]
 
 
+class ClientAdmin(admin.ModelAdmin):
+    model = Client
+    search_fields = ["company_name", "email", "domain"]
+
+
+class CampaignAdmin(admin.ModelAdmin):
+    model = Client
+    search_fields = ["client", "campaign_name"]
+
+
 admin.site.register(Legislator, LegislatorAdmin)
 admin.site.register(SoSElectedOfficial, ElectedOfficialAdmin)
 admin.site.register(Request, RequestAdmin)
+admin.site.register(Client, ClientAdmin)
+admin.site.register(Campaign, CampaignAdmin)
