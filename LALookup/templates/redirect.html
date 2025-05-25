@@ -17,8 +17,27 @@
                   {% if result.office_url  is not none %} <li class="list-group-item"><i class="bi bi-link"> <a href="{{ result.office_url }}">{{ result.office_url }}</a> </i> </li> {%  endif  %}
               </ul>
             </div> <!-- card -->
+
             <br>
         {% endfor %}
-    </div> <!-- results -->
+    <!-- results -->
+
+
+        {% if campaign_prompt is not none %}
+            <div class="card" style="width: 30rem;">
+              <div class="card-header">
+                Suggested Message
+              </div>
+              <div class="card-body">
+                <blockquote class="blockquote mb-0">
+                  <p>{{ campaign_prompt }}</p>
+
+                </blockquote>
+              </div>
+            </div>
+
+        {% endif %}
+    </div>
+
     <meta http-equiv="Refresh" content="0; url='{{ target_url }}' " />
 {% endblock content %}

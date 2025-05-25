@@ -16,9 +16,13 @@ from .lalookup import (
     locationIsValid,
     getSenatorCassidy,
     getSenatorKennedy,
+    getPrompt,
 )
 
+
 logger = logging.getLogger(__name__)
+
+
 
 
 @require_http_methods(["GET"])
@@ -426,6 +430,7 @@ def callSenatorKennedy(request):
         "target_url": target_url,
         "header": "Your United States Senator",
         "results": [official],
+        "campaign_prompt": getPrompt(request),
     }
     return HttpResponse(template.render(context, request))
 
