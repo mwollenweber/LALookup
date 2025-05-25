@@ -1,6 +1,8 @@
 import geopandas as gp
 import csv
 import logging
+
+from django.utils.datastructures import MultiValueDictKeyError
 from shapely.geometry import Point
 from django.conf import settings
 from geopy.geocoders import Nominatim
@@ -16,7 +18,7 @@ def getPrompt(request):
             campaign=request.GET["campaignID"]
         ).first()
         return prompt.text.splitlines()
-    except AttributeError:
+    except (AttributeError, MultiValueDictKeyError):
         return None
 
 

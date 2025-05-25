@@ -4,7 +4,7 @@
     <div class="container-fluid" id="results-container" > <!-- Results Container -->
         <h1> {{ header }}</h1><br>
         {%  for result in results %}
-            <div class="card" style="width: 30rem;" >
+            <div class="card" style="width: 25rem;" >
               <!-- <img src="placeholder-headshot.png " class="card-img-top" alt="placeholder"> -->
               <div class="card-body">
                 <h5 class="card-title"> {{ result.first_name }} {{ result.last_name }}</h5>
@@ -24,7 +24,7 @@
 
 
         {% if campaign_prompt is not none %}
-            <div class="card" style="width: 30rem;">
+            <div class="card" style="width: 25rem;">
               <div class="card-header">
                 Suggested Message
               </div>
