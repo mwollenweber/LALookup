@@ -7,6 +7,7 @@ from geopy.geocoders import Nominatim
 from .models import Legislator, SoSElectedOfficial
 from .settings import SUPPORTED_STATES, GEO_TIMEOUT
 
+
 logger = logging.getLogger(__name__)
 
 

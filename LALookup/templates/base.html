@@ -13,13 +13,11 @@
         {% load static %}
         {# Load the tag library #}
         {% load bootstrap5 %}
-        
 
         {# Load CSS and JavaScript #}
         {% bootstrap_css %}
         {% bootstrap_javascript %}
         
-     
 
         {# Display django.contrib.messages as Bootstrap alerts #}
         {% bootstrap_messages %}
@@ -49,10 +47,6 @@
                 address = addressText.value;
             }
 
-            function success(data) {
-                    alert("Success func");
-            }
-
             function clickSubmit() {
                 form = document.getElementById("searchform");
                 form.method = 'POST';
@@ -60,7 +54,6 @@
                 form.lon.value = lon;
                 form.submit();
             }
-
         </script>
 
         <nav class="navbar navbar-dark bg-dark">
@@ -109,9 +102,11 @@
               <a href="/" class="mb-3 me-2 mb-md-0 text-body-secondary text-decoration-none lh-1">
                 <svg class="bi" width="30" height="24"><use xlink:href="#bootstrap"/></svg>
               </a>
-                <span class="mb-3 mb-md-0 text-body-secondary"> &copy;2025 <a href="https://insomniac.tech/matthew-wollenweber/">Matthew Wollenweber</a>&nbsp;</span>
-                <span class="mb-3 mb-md-0 text-body-secondary">Please report problems to: <a href="mailto:info@defendlouisiana.org">info@defendlouisiana.org </a></span>
-
+                <small>
+                    <span class="mb-3 mb-md-0 text-muted"> &copy;2025 <a href="https://insomniac.tech/matthew-wollenweber/">Matthew Wollenweber</a>&nbsp;</span>
+                    <br>
+                    <span class="mb-3 mb-md-0 text-muted">Please report problems to: <a href="mailto:info@defendlouisiana.org">info@defendlouisiana.org </a></span>
+                </small>
             </div>
 
             <ul class="nav col-md-4 justify-content-end list-unstyled d-flex">
