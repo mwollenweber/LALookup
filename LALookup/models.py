@@ -189,18 +189,23 @@ class Client(models.Model):
 
 
 class Campaign(models.Model):
-    id = models.AutoField(primary_key=True)
+    id = models.CharField(
+        primary_key=True,
+        max_length=40,
+        db_index=True,
+        blank=True,
+        default=uuid.uuid4().hex,
+    )
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
     campaign_name = models.CharField(
         max_length=200, blank=True, null=True, db_index=True
-    )
-    campaign_id = models.CharField(
-        max_length=40, db_index=True, blank=True, default=uuid.uuid4().hex
     )
     allowed_referrer_domain = models.CharField(
         max_length=200, blank=True, null=True, db_index=True
     )
     hit_count = models.IntegerField(default=0, db_index=True)
+    created = models.DateTimeField(auto_now=True)
+    updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.campaign_name
@@ -228,3 +233,16 @@ class Request(models.Model):
 
     def __str__(self):
         return f"[{self.id}]: {self.remote_address} {self.method} {self.endpoint}"
+
+
+class CampaignPrompt(models.Model):
+    id = models.AutoField(primary_key=True)
+    campaign = models.ForeignKey(Campaign, on_delete=models.SET_NULL, null=True)
+    name = models.CharField(max_length=200, blank=True, null=True, db_index=True)
+    created = models.DateTimeField(auto_now=True)
+    updated = models.DateTimeField(auto_now=True)
+    text = models.TextField(blank=True, null=True)
+    hit_count = models.IntegerField(default=0, db_index=True)
+
+    def __str__(self):
+        return f"{self.campaign.client.company_name}: {self.name}"

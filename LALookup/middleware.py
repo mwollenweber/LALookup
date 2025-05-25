@@ -1,4 +1,5 @@
 import time
+from urllib.parse import urlparse
 from .models import Request, Campaign
 
 
@@ -48,7 +49,7 @@ class SaveRequest:
 
         # Create instance of our model and assign values
         request_log = Request(
-            endpoint=request.get_full_path(),
+            endpoint=urlparse(request.get_full_path()).path,
             response_code=response.status_code,
             method=request.method,
             remote_address=self.get_client_ip(request),
@@ -64,7 +65,7 @@ class SaveRequest:
         )
         request_log.save()
 
-        campaign = Campaign.objects.filter(campaign_id=campaign_id).first()
+        campaign = Campaign.objects.filter(id=campaign_id).first()
         if campaign:
             campaign.hit_count += 1
             campaign.save()
