@@ -44,6 +44,7 @@ DEBUG = True
 ALLOWED_HOSTS = [
     "127.0.0.1",
     "localhost",
+    "action.defendlouisiana.org",
     "lookup.defendlouisiana.org",
     "lalookup-530602149581.herokuapp.com",
 ]
