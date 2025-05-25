@@ -351,11 +351,9 @@ def test(request):
 
 
 def testBad(request):
-    # this looks stupid... but... it works
     address = "9600 N. MoPac Expressway,  78759"
     lat, lon = address2latlon(address)
     location = getLocation(lat, lon)
-
     if not locationIsValid(location):
         return invalidState(request)
     logger.info(f"render body: {request.body}")
