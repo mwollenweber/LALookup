@@ -197,18 +197,24 @@ class Campaign(models.Model):
         default=uuid.uuid4().hex,
     )
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
-    campaign_name = models.CharField(
-        max_length=200, blank=True, null=True, db_index=True
-    )
+    name = models.CharField(max_length=200, blank=True, null=True, db_index=True)
     allowed_referrer_domain = models.CharField(
         max_length=200, blank=True, null=True, db_index=True
     )
     hit_count = models.IntegerField(default=0, db_index=True)
     created = models.DateTimeField(auto_now=True)
     updated = models.DateTimeField(auto_now=True)
+    expires = models.DateTimeField(blank=True, null=True)
+    hit_count = models.IntegerField(default=0, db_index=True)
+    enabled = models.BooleanField(default=True)
+    prompt = models.TextField(blank=True, null=True)
+    title = models.CharField(max_length=200, blank=True, null=True, db_index=True)
+    header = models.CharField(max_length=200, blank=True, null=True)
+    description = models.TextField(blank=True, null=True)
+    image_url = models.TextField(blank=True, null=True)
 
     def __str__(self):
-        return self.campaign_name
+        return f"{self.client.company_name}: {self.name}"
 
 
 class Request(models.Model):
@@ -233,16 +239,3 @@ class Request(models.Model):
 
     def __str__(self):
         return f"[{self.id}]: {self.remote_address} {self.method} {self.endpoint}"
-
-
-class CampaignPrompt(models.Model):
-    id = models.AutoField(primary_key=True)
-    campaign = models.ForeignKey(Campaign, on_delete=models.SET_NULL, null=True)
-    name = models.CharField(max_length=200, blank=True, null=True, db_index=True)
-    created = models.DateTimeField(auto_now=True)
-    updated = models.DateTimeField(auto_now=True)
-    text = models.TextField(blank=True, null=True)
-    hit_count = models.IntegerField(default=0, db_index=True)
-
-    def __str__(self):
-        return f"{self.campaign.client.company_name}: {self.name}"
