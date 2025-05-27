@@ -1,6 +1,33 @@
 {% extends "base.html" %}
 
+{% block dynamicmeta %}
+    {% if title is not none %}
+        <title> {{ title }}</title>
+    {% else %}
+        <title> Louisiana Progressive Action</title>
+    {% endif %}
+
+    {% if url is not none %}
+        <meta property="og:url" content="{{ url }}">
+        <meta property="twitter:url" content="{{ url }}">
+    {% endif %}
+
+    {% if description is not none %}
+        <meta name="twitter:description" content="{{ description }}">
+        <meta property="og:description" content="{{ description }}">
+    {% else %}
+        <meta name="twitter:description" content="Be heard. Contact your Elected Leaders with Louisiana Progressive Action">
+        <meta property="og:description" content="Be heard. Contact your Elected Leaders with Louisiana Progressive Action">
+    {% endif %}
+
+    {% if image_url is not none %} <meta property="og:image" content="{{ image_url }}"> {% endif %}
+
+
+
+{% endblock %}
+
 {% block content %}
+
     <div class="container-fluid" id="results-container" > <!-- Results Container -->
         <h1> {{ header }}</h1><br>
         {%  for result in results %}
