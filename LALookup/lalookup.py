@@ -13,23 +13,23 @@ logger = logging.getLogger(__name__)
 
 def getContext(request):
     context = {}
-    if "campaignID" in request.GET:
-        campaignID = request.GET["campaignID"]
-        campaign = Campaign.objects.filter(id=campaignID).first()
-        context["campaign_id"] = campaignID
-        context["title"] = campaign.title
-        context["header"] = campaign.header
-        context["campaign_prompt"] = campaign.prompt.splitlines()
-        context["description"] = campaign.description
-        context["image_url"] = campaign.image_url
-    else:
-        context["title"] = "Louisiana Progressive Action: Be Heard!"
-        context["header"] = "Contact Your Elected Official"
-        context["description"] = (
-            "Be Heard! Contact Your Elected Official with Louisiana Progressive Action"
-        )
-
+    context["title"] = "Louisiana Progressive Action: Be Heard!"
+    context["header"] = "Contact Your Elected Official"
+    context["description"] = (
+        "Be Heard! Contact Your Elected Official with Louisiana Progressive Action"
+    )
     context["url"] = request.build_absolute_uri()
+
+    if "campaignID" in request.GET:
+        campaign = Campaign.objects.filter(id=request.GET["campaignID"]).first()
+        if campaign:
+            context["campaign_id"] = campaign.id
+            context["title"] = campaign.title
+            context["header"] = campaign.header
+            context["campaign_prompt"] = campaign.prompt.splitlines()
+            context["description"] = campaign.description
+            context["image_url"] = campaign.image_url
+
     return context
 
 

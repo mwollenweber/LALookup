@@ -54,14 +54,12 @@ def addressSearch(request):
     if "lat" in request.POST.keys() and "lon" in request.POST.keys():
         lat = request.POST["lat"]
         lon = request.POST["lon"]
-        address = ""
     elif "address" in request.POST.keys():
         address = unquote(request.POST["address"])
         lat, lon = address2latlon(address)
     elif "lat" in request.GET.keys() and "lon" in request.GET.keys():
         lat = request.GET["lat"]
         lon = request.GET["lon"]
-        address = latlon2addr(lat, lon)
     elif "address" in request.GET.keys():
         address = request.GET["address"]
         lat, lon = address2latlon(address)
@@ -69,18 +67,18 @@ def addressSearch(request):
         return JsonResponse(
             {
                 "status": "error",
-                "message": f"You must provide an address or lat+lon",
+                "message": f"You must provide an address or lat and lon",
             }
         )
     location = getLocation(lat, lon)
     response = {
         "status": "success",
-        "address": address,
+        "address": location.address,
         "lat": lat,
         "lon": lon,
-        "parish": location["address"]["county"],
-        "state": location["address"]["state"],
-        "results": getElectedOfficials(lat, lon),
+        "parish": location.raw["address"]["county"],
+        "state": location.raw["address"]["state"],
+        "results": getElectedOfficials(location),
     }
     return JsonResponse(response)
 
