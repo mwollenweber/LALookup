@@ -137,8 +137,8 @@ USE_TZ = True
 USE_I18N = True
 
 STATIC_ROOT = BASE_DIR / "staticfiles"
+STATICFILES_DIRS = [BASE_DIR / "static"]
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 STATIC_HOST = os.environ.get("DJANGO_STATIC_HOST", "")
 STATIC_URL = STATIC_HOST + "/static/"
-
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"

@@ -5,7 +5,6 @@ from django.views.decorators.http import require_http_methods
 from django.template import loader
 from .lalookup import (
     address2latlon,
-    latlon2addr,
     getStateRep,
     getStateSenator,
     getGovernor,
