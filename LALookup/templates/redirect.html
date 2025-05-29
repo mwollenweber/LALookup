@@ -20,7 +20,10 @@
         <meta property="og:description" content="Be heard. Contact your Elected Leaders with Louisiana Progressive Action">
     {% endif %}
 
-    {% if image_url is not none %} <meta property="og:image" content="{{ image_url }}"> {% endif %}
+    {% if image_url is not none %}
+        <meta property="twitter:image" content="{{ image_url }}">
+        <meta property="og:image" content="{{ image_url }}">
+    {% endif %}
 
 
 
