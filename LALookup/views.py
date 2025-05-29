@@ -16,7 +16,7 @@ from .lalookup import (
     locationIsValid,
     getSenatorCassidy,
     getSenatorKennedy,
-    getPrompt,
+    getContext,
 )
 
 
@@ -54,14 +54,12 @@ def addressSearch(request):
     if "lat" in request.POST.keys() and "lon" in request.POST.keys():
         lat = request.POST["lat"]
         lon = request.POST["lon"]
-        address = ""
     elif "address" in request.POST.keys():
         address = unquote(request.POST["address"])
         lat, lon = address2latlon(address)
     elif "lat" in request.GET.keys() and "lon" in request.GET.keys():
         lat = request.GET["lat"]
         lon = request.GET["lon"]
-        address = latlon2addr(lat, lon)
     elif "address" in request.GET.keys():
         address = request.GET["address"]
         lat, lon = address2latlon(address)
@@ -69,18 +67,18 @@ def addressSearch(request):
         return JsonResponse(
             {
                 "status": "error",
-                "message": f"You must provide an address or lat+lon",
+                "message": f"You must provide an address or lat and lon",
             }
         )
     location = getLocation(lat, lon)
     response = {
         "status": "success",
-        "address": address,
+        "address": location.address,
         "lat": lat,
         "lon": lon,
-        "parish": location["address"]["county"],
-        "state": location["address"]["state"],
-        "results": getElectedOfficials(lat, lon),
+        "parish": location.raw["address"]["county"],
+        "state": location.raw["address"]["state"],
+        "results": getElectedOfficials(location),
     }
     return JsonResponse(response)
 
@@ -103,12 +101,10 @@ def callMyStateRep(request):
         official = getStateRep(location)
         target_url = f"tel:{official['office_phone']}"
         template = loader.get_template("redirect.html")
-        context = {
-            "target_url": target_url,
-            "header": "Your State Representative",
-            "results": [official],
-            "campaign_prompt": getPrompt(request),
-        }
+        context = getContext(request)
+        context["header"] = "Your Louisiana State Representative"
+        context["target_url"] = target_url
+        context["results"] = [official]
         return HttpResponse(template.render(context, request))
     else:
         template = loader.get_template("locateme.html")
@@ -127,12 +123,10 @@ def emailMyStateRep(request):
         official = getStateRep(location)
         target_url = f"mailto:{official['email']}"
         template = loader.get_template("redirect.html")
-        context = {
-            "target_url": target_url,
-            "header": "Your State Representative",
-            "results": [official],
-            "campaign_prompt": getPrompt(request),
-        }
+        context = getContext(request)
+        context["header"] = "Your Louisiana State Representative"
+        context["target_url"] = target_url
+        context["results"] = [official]
         return HttpResponse(template.render(context, request))
     else:
         template = loader.get_template("locateme.html")
@@ -151,12 +145,11 @@ def callMyUSRep(request):
         official = getUSRep(location)
         target_url = f"tel:{official['office_phone']}"
         template = loader.get_template("redirect.html")
-        context = {
-            "target_url": target_url,
-            "header": "Your US Representative",
-            "results": [official],
-            "campaign_prompt": getPrompt(request),
-        }
+        context = getContext(request)
+        context["header"] = "Your US Representative"
+        context["target_url"] = target_url
+        context["results"] = [official]
+
         return HttpResponse(template.render(context, request))
     else:
         template = loader.get_template("locateme.html")
@@ -175,12 +168,10 @@ def emailMyUSRep(request):
         official = getUSRep(location)
         target_url = f"mailto:{official['email']}"
         template = loader.get_template("redirect.html")
-        context = {
-            "target_url": target_url,
-            "header": "Your US Representative",
-            "results": [official],
-            "campaign_prompt": getPrompt(request),
-        }
+        context = getContext(request)
+        context["header"] = "Your US Representative"
+        context["target_url"] = target_url
+        context["results"] = [official]
         return HttpResponse(template.render(context, request))
     else:
         template = loader.get_template("locateme.html")
@@ -199,12 +190,10 @@ def callMyStateSenator(request):
         official = getStateSenator(location)
         target_url = f"tel:{official['office_phone']}"
         template = loader.get_template("redirect.html")
-        context = {
-            "target_url": target_url,
-            "header": "Your State Senator",
-            "results": [official],
-            "campaign_prompt": getPrompt(request),
-        }
+        context = getContext(request)
+        context["header"] = "Your State Senator"
+        context["target_url"] = target_url
+        context["results"] = [official]
         return HttpResponse(template.render(context, request))
     else:
         template = loader.get_template("locateme.html")
@@ -223,12 +212,10 @@ def emailMyStateSenator(request):
         official = getStateSenator(location)
         target_url = f"mailto:{official['email']}"
         template = loader.get_template("redirect.html")
-        context = {
-            "target_url": target_url,
-            "header": "Your State Senator",
-            "results": [official],
-            "campaign_prompt": getPrompt(request),
-        }
+        context = getContext(request)
+        context["header"] = "Your State Senator"
+        context["target_url"] = target_url
+        context["results"] = [official]
         return HttpResponse(template.render(context, request))
     else:
         template = loader.get_template("locateme.html")
@@ -247,12 +234,10 @@ def callMyMayor(request):
         official = getMayor(location)
         target_url = f"tel:{official['office_phone']}"
         template = loader.get_template("redirect.html")
-        context = {
-            "target_url": target_url,
-            "header": "Your Mayor",
-            "results": [official],
-            "campaign_prompt": getPrompt(request),
-        }
+        context = getContext(request)
+        context["header"] = "Your Mayor"
+        context["target_url"] = target_url
+        context["results"] = [official]
         return HttpResponse(template.render(context, request))
     else:
         template = loader.get_template("locateme.html")
@@ -271,12 +256,10 @@ def emailMyMayor(request):
         official = getMayor(location)
         target_url = f"mailto:{official['email']}"
         template = loader.get_template("redirect.html")
-        context = {
-            "target_url": target_url,
-            "header": "Your Mayor",
-            "results": [official],
-            "campaign_prompt": getPrompt(request),
-        }
+        context = getContext(request)
+        context["header"] = "Your Mayor"
+        context["target_url"] = target_url
+        context["results"] = [official]
         return HttpResponse(template.render(context, request))
     else:
         template = loader.get_template("locateme.html")
@@ -295,12 +278,10 @@ def callMyGovernor(request):
         official = getGovernor(location)
         target_url = f"tel:{official['office_phone']}"
         template = loader.get_template("redirect.html")
-        context = {
-            "target_url": target_url,
-            "header": "Your Governor",
-            "results": [official],
-            "campaign_prompt": getPrompt(request),
-        }
+        context = getContext(request)
+        context["header"] = "Your Governor"
+        context["target_url"] = target_url
+        context["results"] = [official]
         return HttpResponse(template.render(context, request))
     else:
         template = loader.get_template("locateme.html")
@@ -319,12 +300,11 @@ def emailMyGovernor(request):
         official = getGovernor(location)
         target_url = f"mailto:{official['email']}"
         template = loader.get_template("redirect.html")
-        context = {
-            "target_url": target_url,
-            "header": "Your Governor",
-            "results": [official],
-            "campaign_prompt": getPrompt(request),
-        }
+        context = getContext(request)
+        context["header"] = "Your Governor"
+        context["target_url"] = target_url
+        context["results"] = [official]
+
         return HttpResponse(template.render(context, request))
     else:
         template = loader.get_template("locateme.html")
@@ -419,28 +399,24 @@ def invalidState(request):
 @require_http_methods(["GET"])
 def callSenatorCassidy(request):
     official = getSenatorCassidy()
-    target_url = f"tel:{official['office_phone']}"
     template = loader.get_template("redirect.html")
-    context = {
-        "target_url": target_url,
-        "header": "Your United States Senator",
-        "results": [official],
-        "campaign_prompt": getPrompt(request),
-    }
+    context = getContext(request)
+    context["target_url"] = f"tel:{official['office_phone']}"
+    context["title"] = "Call Senator Cassidy"
+    context["header"] = "Your United States Senator"
+    context["results"] = [official]
     return HttpResponse(template.render(context, request))
 
 
 @require_http_methods(["GET"])
 def callSenatorKennedy(request):
     official = getSenatorKennedy()
-    target_url = f"tel:{official['office_phone']}"
     template = loader.get_template("redirect.html")
-    context = {
-        "target_url": target_url,
-        "header": "Your United States Senator",
-        "results": [official],
-        "campaign_prompt": getPrompt(request),
-    }
+    context = getContext(request)
+    context["target_url"] = f"tel:{official['office_phone']}"
+    context["title"] = "Call Senator Kennedy"
+    context["header"] = "Your United States Senator"
+    context["results"] = [official]
     return HttpResponse(template.render(context, request))
 
 
@@ -449,12 +425,11 @@ def emailSenatorCassidy(request):
     official = getSenatorCassidy()
     target_url = f"{official['mailform']}"
     template = loader.get_template("redirect.html")
-    context = {
-        "target_url": target_url,
-        "header": "Your United States Senator",
-        "results": [official],
-        "campaign_prompt": getPrompt(request),
-    }
+    context = getContext(request)
+    context["target_url"] = target_url
+    context["title"] = "Email Senator Cassidy"
+    context["header"] = "Your United States Senator"
+    context["results"] = [official]
     return HttpResponse(template.render(context, request))
 
 
@@ -463,10 +438,9 @@ def emailSenatorKennedy(request):
     official = getSenatorKennedy()
     target_url = f"{official['mailform']}"
     template = loader.get_template("redirect.html")
-    context = {
-        "target_url": target_url,
-        "header": "Your United States Senator",
-        "results": [official],
-        "campaign_prompt": getPrompt(request),
-    }
+    context = getContext(request)
+    context["target_url"] = target_url
+    context["title"] = "Email Senator Kennedy"
+    context["header"] = "Your United States Senator"
+    context["results"] = [official]
     return HttpResponse(template.render(context, request))

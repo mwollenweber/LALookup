@@ -1,25 +1,36 @@
 import geopandas as gp
 import csv
 import logging
-
 from django.utils.datastructures import MultiValueDictKeyError
 from shapely.geometry import Point
 from django.conf import settings
 from geopy.geocoders import Nominatim
-from .models import Legislator, SoSElectedOfficial, CampaignPrompt
+from .models import Legislator, SoSElectedOfficial, Campaign
 from .settings import SUPPORTED_STATES, GEO_TIMEOUT
 
 logger = logging.getLogger(__name__)
 
 
-def getPrompt(request):
-    try:
-        prompt = CampaignPrompt.objects.filter(
-            campaign=request.GET["campaignID"]
-        ).first()
-        return prompt.text.splitlines()
-    except (AttributeError, MultiValueDictKeyError):
-        return None
+def getContext(request):
+    context = {}
+    context["title"] = "Louisiana Progressive Action: Be Heard!"
+    context["header"] = "Contact Your Elected Official"
+    context["description"] = (
+        "Be Heard! Contact Your Elected Official with Louisiana Progressive Action"
+    )
+    context["url"] = request.build_absolute_uri()
+
+    if "campaignID" in request.GET:
+        campaign = Campaign.objects.filter(id=request.GET["campaignID"]).first()
+        if campaign:
+            context["campaign_id"] = campaign.id
+            context["title"] = campaign.title
+            context["header"] = campaign.header
+            context["campaign_prompt"] = campaign.prompt.splitlines()
+            context["description"] = campaign.description
+            context["image_url"] = campaign.image_url
+
+    return context
 
 
 def locationIsValid(location):

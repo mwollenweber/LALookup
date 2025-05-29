@@ -5,7 +5,6 @@ from .models import (
     Request,
     Client,
     Campaign,
-    CampaignPrompt,
 )
 
 
@@ -32,12 +31,7 @@ class ClientAdmin(admin.ModelAdmin):
 
 class CampaignAdmin(admin.ModelAdmin):
     model = Campaign
-    search_fields = ["client", "campaign_name"]
-
-
-class CampaignPromptAdmin(admin.ModelAdmin):
-    model = CampaignPrompt
-    search_fields = ["name", "campaign"]
+    search_fields = ["client", "name"]
 
 
 admin.site.register(Legislator, LegislatorAdmin)
@@ -45,4 +39,3 @@ admin.site.register(SoSElectedOfficial, ElectedOfficialAdmin)
 admin.site.register(Request, RequestAdmin)
 admin.site.register(Client, ClientAdmin)
 admin.site.register(Campaign, CampaignAdmin)
-admin.site.register(CampaignPrompt, CampaignPromptAdmin)
