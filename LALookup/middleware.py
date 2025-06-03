@@ -6,6 +6,9 @@ from .models import Request, Campaign
 class SaveRequest:
     def __init__(self, get_response):
         self.get_response = get_response
+        self.ignored_user_agents = [
+            "Mozilla/5.0 (compatible; Uptime/1.0; http://uptime.com)"
+        ]
 
         # Filter to log all request to url's that start with any of the strings below.
         # With example below:
@@ -26,6 +29,9 @@ class SaveRequest:
         #     return response
 
         if list(filter(request.get_full_path().startswith, self.exclude_prefixes)):
+            return response
+
+        if request.META.get("HTTP_USER_AGENT") in self.ignored_user_agents:
             return response
 
         if request.method == "POST":
