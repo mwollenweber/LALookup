@@ -16,6 +16,7 @@ from .lalookup import (
     getSenatorCassidy,
     getSenatorKennedy,
     getContext,
+    getActiveCampaigns,
 )
 
 
@@ -44,8 +45,18 @@ def sitemap(request):
         f"{base_url}/callSenatorKennedy\n",
         f"{base_url}/emailSenatorCassidy\n",
         f"{base_url}/emailSenatorKennedy\n",
+        f"{base_url}/campaigns\n",
     ]
     return HttpResponse(urls, content_type="text/plain")
+
+
+@require_http_methods(["GET"])
+def activeCampaigns(request):
+    template = loader.get_template("campaigns.html")
+    context = {
+        "campaigns": getActiveCampaigns(),
+    }
+    return HttpResponse(template.render(context, request))
 
 
 @require_http_methods(["POST", "GET"])

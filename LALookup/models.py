@@ -212,6 +212,7 @@ class Campaign(models.Model):
     header = models.CharField(max_length=200, blank=True, null=True)
     description = models.TextField(blank=True, null=True)
     image_url = models.TextField(blank=True, null=True)
+    shared_url = models.TextField(blank=True, null=True)
 
     def __str__(self):
         return f"{self.client.company_name}: {self.name}"

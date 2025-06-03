@@ -16,7 +16,6 @@ class SaveRequest:
         response = self.get_response(request)  # Get response from view function.
         _t = int((time.time() - _t) * 1000)
 
-
         if list(filter(request.get_full_path().startswith, self.exclude_prefixes)):
             return response
 
