@@ -1,21 +1,14 @@
 import time
 from urllib.parse import urlparse
 from .models import Request, Campaign
+from .settings import IGNORED_IPS, IGNORED_UAS
 
 
 class SaveRequest:
     def __init__(self, get_response):
         self.get_response = get_response
-        self.ignored_user_agents = [
-            "Mozilla/5.0 (compatible; Uptime/1.0; http://uptime.com)"
-        ]
-
-        # Filter to log all request to url's that start with any of the strings below.
-        # With example below:
-        # /example/test/ will be logged.
-        # /other/ will not be logged.
-        self.prefixs = ["/"]
-
+        self.ignored_user_agents = IGNORED_UAS
+        self.ignored_ips = IGNORED_IPS
         self.exclude_prefixes = ["/admin"]
 
     def __call__(self, request):
@@ -23,15 +16,14 @@ class SaveRequest:
         response = self.get_response(request)  # Get response from view function.
         _t = int((time.time() - _t) * 1000)
 
-        # If the url does not start with on of the prefixes above, then return response and dont save log.
-        # (Remove these two lines below to log everything)
-        # if not list(filter(request.get_full_path().startswith, self.prefixs)):
-        #     return response
 
         if list(filter(request.get_full_path().startswith, self.exclude_prefixes)):
             return response
 
         if request.META.get("HTTP_USER_AGENT") in self.ignored_user_agents:
+            return response
+
+        if self.get_client_ip(request) in self.ignored_ips:
             return response
 
         if request.method == "POST":
