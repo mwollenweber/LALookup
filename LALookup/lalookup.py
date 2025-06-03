@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 
 def getActiveCampaigns():
-    return Campaign.objects.filter(enabled=True).all()
+    return Campaign.objects.filter(enabled=True, is_public=True).all()
 
 
 def getContext(request):

@@ -6,7 +6,7 @@
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th scope="col">Client</th>
+                    <!-- <th scope="col">Client</th> -->
                     <th scope="col">Name</th>
                     <th scope="col">Count</th>
                     <th scope="col">Link</th>
@@ -15,7 +15,7 @@
           <tbody>
           {% for c in campaigns %}
             <tr>
-                <td>{{ c.client }}</td>
+                <!-- <td>{{ c.client }}</td> -->
                 <td>{{ c.name }}</td>
                 <td>{{ c.hit_count }}</td>
                 {% if c.shared_url  %} <td><a href="{{ c.shared_url }}"> {{ c.shared_url }}</a></td>
