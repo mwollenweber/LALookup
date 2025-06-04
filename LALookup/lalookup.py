@@ -37,10 +37,13 @@ def getContext(request):
 
 
 def locationIsValid(location):
-    if "address" in location.raw:
-        state = location.raw["address"]["state"]
-        return state in SUPPORTED_STATES
-    return False
+    try:
+        if "address" in location.raw:
+            state = location.raw["address"]["state"]
+            return state in SUPPORTED_STATES
+        return False
+    except AttributeError:
+        return False
 
 
 def getLocation(lat, lon):
@@ -62,8 +65,12 @@ def latlon2addr(lat, lon):
 
 
 def address2latlon(address):
-    gc = Nominatim(user_agent="LALookup", timeout=GEO_TIMEOUT).geocode(address)
-    return float(gc.latitude), float(gc.longitude)
+    try:
+        gc = Nominatim(user_agent="LALookup", timeout=GEO_TIMEOUT).geocode(address)
+        return float(gc.latitude), float(gc.longitude)
+    except AttributeError as e:
+        logger.error(e)
+        return 0.0, 0.0
 
 
 def address2location(address):
