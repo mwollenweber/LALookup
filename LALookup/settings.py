@@ -29,8 +29,7 @@ SENATEMEMBERS = f"{BASE_DIR}/data/SenateMembers.csv"
 HOUSEMEMBERBASEURL = f"https://house.louisiana.gov/H_Reps/members?ID="
 SENATEMEMBERBASEURL = f"https://senate.la.gov/smembers?ID="
 SUPPORTED_STATES = ["Louisiana"]
-GEO_TIMEOUT = 5
-
+GEO_TIMEOUT = int(os.getenv("GEO_TIMEOUT") or 10)
 IGNORED_UAS = os.getenv("IGNORED_UAs") or [
     "Mozilla/5.0 (compatible; Uptime/1.0; http://uptime.com)",
 ]
