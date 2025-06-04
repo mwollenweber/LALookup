@@ -207,11 +207,13 @@ class Campaign(models.Model):
     expires = models.DateTimeField(blank=True, null=True)
     hit_count = models.IntegerField(default=0, db_index=True)
     enabled = models.BooleanField(default=True)
+    is_public = models.BooleanField(default=True)
     prompt = models.TextField(blank=True, null=True)
     title = models.CharField(max_length=200, blank=True, null=True, db_index=True)
     header = models.CharField(max_length=200, blank=True, null=True)
     description = models.TextField(blank=True, null=True)
     image_url = models.TextField(blank=True, null=True)
+    shared_url = models.TextField(blank=True, null=True)
 
     def __str__(self):
         return f"{self.client.company_name}: {self.name}"

@@ -31,6 +31,11 @@ SENATEMEMBERBASEURL = f"https://senate.la.gov/smembers?ID="
 SUPPORTED_STATES = ["Louisiana"]
 GEO_TIMEOUT = 5
 
+IGNORED_UAS = os.getenv("IGNORED_UAs") or [
+    "Mozilla/5.0 (compatible; Uptime/1.0; http://uptime.com)",
+]
+
+IGNORED_IPS = os.getenv("IGNORED_IPS") or []
 
 TEMPLATE_DIRS = [f"{BASE_DIR}/LALookup/templates/"]
 

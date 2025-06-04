@@ -5,9 +5,7 @@ from django.conf import settings
 from LALookup import views
 
 urlpatterns = [
-    # index
     path("", views.locateMe),
-    # WEB
     path("contact", views.renderResposne),
     path("callMyStateRep", views.callMyStateRep),
     path("emailMyStateRep", views.emailMyStateRep),
@@ -29,6 +27,7 @@ urlpatterns = [
     path("emailSenatorKennedy", views.emailSenatorKennedy),
     path("emailMyUSRep", views.callMyUSRep),
     path("callMyUSRep", views.callMyUSRep),
+    path("campaigns", views.activeCampaigns),
     path("test", views.test),
     path("testBad", views.testBad),
     path("sitemap.txt", views.sitemap),

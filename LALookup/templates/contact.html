@@ -14,6 +14,7 @@
                   {% if result.mailform  is not none %} <li class="list-group-item"><i class="bi bi-mailbox"> <a href="{{ result.mailform }}"> {{ result.mailform }}</a> </i> </li> {%  endif  %}
                   {% if result.office_phone  is not none %}  <li class="list-group-item"><i class="bi bi-telephone"> <a href="tel:{{ result.office_phone }}">{{  result.office_phone}}</a> </i> </li> {%  endif  %}
                   {% if result.office_url  is not none %} <li class="list-group-item"><i class="bi bi-link"> <a href="{{ result.office_url }}">{{ result.office_url }}</a> </i> </li> {%  endif  %}
+                  {% if result.twitter  is not none %} <li class="list-group-item"><i class="bi bi-twitter"> <a href="http://x.com/{{ result.twitter }}">{{ result.twitter }}</a> </i> </li> {%  endif  %}
               </ul>
             </div> <!-- card -->
             <br>

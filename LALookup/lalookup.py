@@ -11,6 +11,10 @@ from .settings import SUPPORTED_STATES, GEO_TIMEOUT
 logger = logging.getLogger(__name__)
 
 
+def getActiveCampaigns():
+    return Campaign.objects.filter(enabled=True, is_public=True).all()
+
+
 def getContext(request):
     context = {}
     context["title"] = "Louisiana Progressive Action: Be Heard!"
@@ -29,7 +33,6 @@ def getContext(request):
             context["campaign_prompt"] = campaign.prompt.splitlines()
             context["description"] = campaign.description
             context["image_url"] = campaign.image_url
-
     return context
 
 

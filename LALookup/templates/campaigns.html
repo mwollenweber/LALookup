@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="container-fluid" id="results-container" >
+        <h1>Active Campaigns</h1>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <!-- <th scope="col">Client</th> -->
+                    <th scope="col">Name</th>
+                    <th scope="col">Count</th>
+                    <th scope="col">Link</th>
+                </tr>
+          </thead>
+          <tbody>
+          {% for c in campaigns %}
+            <tr>
+                <!-- <td>{{ c.client }}</td> -->
+                <td>{{ c.name }}</td>
+                <td>{{ c.hit_count }}</td>
+                {% if c.shared_url  %} <td><a href="{{ c.shared_url }}"> {{ c.shared_url }}</a></td>
+                {% else %}<td><a href="#"> None </a></td>
+                {% endif %}
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+    </div>
+{% endblock content %}
