@@ -12,7 +12,6 @@ class SaveRequest:
         self.exclude_prefixes = ["/admin"]
 
     def __call__(self, request):
-        campaign_id = None
         _t = time.time()  # Calculated execution time.
         response = self.get_response(request)  # Get response from view function.
         _t = int((time.time() - _t) * 1000)
@@ -23,9 +22,8 @@ class SaveRequest:
         if request.META.get("HTTP_USER_AGENT") in self.ignored_user_agents:
             return response
 
-        # if self.get_client_ip(request) in self.ignored_ips:
-        #     logger.warn()
-        #     return response
+        if self.get_client_ip(request) in self.ignored_ips:
+            return response
 
         if request.method == "POST":
             lat = request.POST["lat"] if "lat" in request.POST else None
@@ -63,13 +61,6 @@ class SaveRequest:
             campaign_id=campaign_id,
         )
         request_log.save()
-
-        if campaign_id:
-            campaign = Campaign.objects.filter(id=campaign_id).first()
-            if campaign:
-                campaign.hit_count += 1
-                campaign.save()
-
         return response
 
     # get clients ip address

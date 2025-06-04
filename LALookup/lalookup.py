@@ -33,6 +33,8 @@ def getContext(request):
             context["campaign_prompt"] = campaign.prompt.splitlines()
             context["description"] = campaign.description
             context["image_url"] = campaign.image_url
+            campaign.hit_count += 1
+            campaign.save()
     return context
 
 
