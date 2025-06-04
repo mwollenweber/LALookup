@@ -12,6 +12,7 @@ class SaveRequest:
         self.exclude_prefixes = ["/admin"]
 
     def __call__(self, request):
+        campaign_id = None
         _t = time.time()  # Calculated execution time.
         response = self.get_response(request)  # Get response from view function.
         _t = int((time.time() - _t) * 1000)
@@ -63,11 +64,11 @@ class SaveRequest:
         )
         request_log.save()
 
-        campaign = Campaign.objects.filter(id=campaign_id).first()
-        if campaign:
-            print(campaign.id)
-            campaign.hit_count += 1
-            campaign.save()
+        if campaign_id:
+            campaign = Campaign.objects.filter(id=campaign_id).first()
+            if campaign:
+                campaign.hit_count += 1
+                campaign.save()
 
         return response
 
