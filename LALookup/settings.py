@@ -18,6 +18,10 @@ DBHOST = os.getenv("DBHOST") or warn(
     "No Database Host set in environment variable DBHOST"
 )
 
+GMAP_APIKEY = os.getenv("GMAP_APIKEY") or warn(
+    "You need to set a GMAP_APIKEY environment variable"
+)
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -35,14 +39,13 @@ IGNORED_UAS = os.getenv("IGNORED_UAs") or [
 ]
 
 IGNORED_IPS = os.getenv("IGNORED_IPS") or []
-
 TEMPLATE_DIRS = [f"{BASE_DIR}/LALookup/templates/"]
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv("SECRET_KEY") or get_random_secret_key()
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv("DEBUG") or False
+DEBUG = bool(os.getenv("DEBUG")) or False
 
 
 ALLOWED_HOSTS = [
@@ -65,7 +68,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    #'django_bootstrap_icons',
+    "django_bootstrap_icons",
 ]
 
 
