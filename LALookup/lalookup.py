@@ -2,11 +2,10 @@ import geopandas as gp
 import csv
 import logging
 import googlemaps
-from geopy.geocoders import Nominatim
 from shapely.geometry import Point
 from django.conf import settings
 from .models import Legislator, SoSElectedOfficial, Campaign
-from .settings import SUPPORTED_STATES, GEO_TIMEOUT, GMAP_APIKEY
+from .settings import SUPPORTED_STATES, GMAP_APIKEY
 
 logger = logging.getLogger(__name__)
 
