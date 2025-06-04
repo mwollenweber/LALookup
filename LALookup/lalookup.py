@@ -1,12 +1,11 @@
 import geopandas as gp
 import csv
 import logging
-from django.utils.datastructures import MultiValueDictKeyError
+import googlemaps
 from shapely.geometry import Point
 from django.conf import settings
-from geopy.geocoders import Nominatim
 from .models import Legislator, SoSElectedOfficial, Campaign
-from .settings import SUPPORTED_STATES, GEO_TIMEOUT
+from .settings import SUPPORTED_STATES, GMAP_APIKEY
 
 logger = logging.getLogger(__name__)
 
@@ -40,43 +39,62 @@ def getContext(request):
 
 def locationIsValid(location):
     try:
-        if "address" in location.raw:
-            state = location.raw["address"]["state"]
-            return state in SUPPORTED_STATES
-        return False
+        print("42")
+        print(location)
+        state = location["state"]
+        state = location["state"]
+        return state in SUPPORTED_STATES
     except AttributeError:
         return False
 
 
+def getCityName(address_components):
+    for component in address_components:
+        if "locality" in component["types"]:
+            return component["long_name"]
+
+
+def getStateName(address_components):
+    for component in address_components:
+        if "administrative_area_level_1" in component["types"]:
+            return component["long_name"]
+
+
+def getCountyName(address_components):
+    for component in address_components:
+        if "administrative_area_level_2" in component["types"]:
+            return component["long_name"]
+
+
 def getLocation(lat, lon):
-    geolocator = Nominatim(user_agent="LALookup", timeout=GEO_TIMEOUT)
-    location = geolocator.reverse(f"{lat}, {lon}")
-    return location
-
-
-def latlon2Parish(lat, lon):
-    geolocator = Nominatim(user_agent="LALookup", timeout=GEO_TIMEOUT)
-    location = geolocator.reverse(f"{lat}, {lon}")
-    return location.raw["address"]["county"]
+    gmaps = googlemaps.Client(key=GMAP_APIKEY)
+    geocode_result = gmaps.reverse_geocode((lat, lon))[0]
+    geocode_result["state"] = getStateName(geocode_result["address_components"])
+    geocode_result["city"] = getCityName(geocode_result["address_components"])
+    geocode_result["county"] = getCountyName(geocode_result["address_components"])
+    geocode_result["address"] = geocode_result["formatted_address"]
+    geocode_result["lat"] = geocode_result["geometry"]["location"]["lat"]
+    geocode_result["lon"] = geocode_result["geometry"]["location"]["lng"]
+    return geocode_result
 
 
 def latlon2addr(lat, lon):
-    geolocator = Nominatim(user_agent="LALookup", timeout=GEO_TIMEOUT)
-    location = geolocator.reverse(f"{lat}, {lon}")
-    return location.address
+    gmaps = googlemaps.Client(key=GMAP_APIKEY)
+    geocode_result = gmaps.reverse_geocode((lat, lon))[0]
+    return geocode_result["formatted_address"]
 
 
 def address2latlon(address):
     try:
-        gc = Nominatim(user_agent="LALookup", timeout=GEO_TIMEOUT).geocode(address)
-        return float(gc.latitude), float(gc.longitude)
+        gmaps = googlemaps.Client(key=GMAP_APIKEY)
+        geocode_result = gmaps.geocode(address)[0]
+        return (
+            geocode_result["geometry"]["location"]["lat"],
+            geocode_result["geometry"]["location"]["lng"],
+        )
     except AttributeError as e:
-        logger.error(e)
+        logger.error("Address could not be geocoded")
         return 0.0, 0.0
-
-
-def address2location(address):
-    return Nominatim(user_agent="LALookup", timeout=GEO_TIMEOUT).geocode(address)
 
 
 def findShapeIndex(lat, lon, shape):
@@ -102,7 +120,7 @@ def getCongressDistrict(lat, lon):
 def getUSRep(location):
     shape = gp.read_file(settings.CONGRESSMAP)
     shape = shape.to_crs("EPSG:4269")
-    index = findShapeIndex(location.latitude, location.longitude, shape)
+    index = findShapeIndex(location["lat"], location["lon"], shape)
     rep = SoSElectedOfficial.objects.filter(
         officeTitle__icontains="U. S. Representative",
         first_name__icontains=shape.FIRSTNAME[index],
@@ -125,7 +143,7 @@ def getSenateDistrict(lat, lon):
 
 def getStateRep(location):
     rep = Legislator.objects.get(
-        districtnumber=getHouseDistrict(location.latitude, location.longitude),
+        districtnumber=getHouseDistrict(location["lat"], location["lon"]),
         chamber="House",
     )
     return rep.todict() if rep else None
@@ -133,7 +151,7 @@ def getStateRep(location):
 
 def getStateSenator(location):
     sen = Legislator.objects.filter(
-        districtnumber=getSenateDistrict(location.latitude, location.longitude),
+        districtnumber=getSenateDistrict(location["lat"], location["lon"]),
         chamber="Senate",
     ).first()
     return sen.todict() if sen else None
@@ -152,7 +170,7 @@ def getMemberURL(chamber, member_id):
 
 def getMayor(location):
     try:
-        city = location.raw["address"]["city"]
+        city = location["city"]
         mayor = SoSElectedOfficial.objects.filter(
             officeTitle__icontains="Mayor", officeDescription__icontains=city
         ).first()
@@ -163,23 +181,9 @@ def getMayor(location):
 
 
 def getGovernor(location):
-    state = location.raw["address"]["state"]
+    state = location["state"]
     gov = SoSElectedOfficial.objects.get(officeTitle="Governor")
     return gov.todict() if gov else None
-
-
-def getOfficials(location, officeTitle):
-    official_list = []
-    # location = (
-    #     Nominatim(user_agent="LALookup", timeout=GEO_TIMEOUT)
-    #     .reverse(f"{lat}, {lon}")
-    #     .raw
-    # )
-    # state = location["address"]["state"]
-    officials = SoSElectedOfficial.object.filter(officeTitle=officeTitle).all()
-    for off in officials:
-        official_list.append(off.todict())
-    return official_list
 
 
 def getSenators(location):

@@ -83,11 +83,11 @@ def addressSearch(request):
     location = getLocation(lat, lon)
     response = {
         "status": "success",
-        "address": location.address,
-        "lat": lat,
-        "lon": lon,
-        "parish": location.raw["address"]["county"],
-        "state": location.raw["address"]["state"],
+        "address": location["address"],
+        "lat": location["lat"],
+        "lon": location["lon"],
+        "parish": location["county"],
+        "state": location["state"],
         "results": getElectedOfficials(location),
     }
     return JsonResponse(response)
@@ -331,7 +331,7 @@ def apitest(request):
         "address": address,
         "lat": lat,
         "lon": lon,
-        "parish": location.raw["address"]["county"],
+        "parish": location["county"],
         "results": getElectedOfficials(location),
     }
     return JsonResponse(r)
