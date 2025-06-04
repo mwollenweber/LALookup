@@ -44,6 +44,7 @@ Pygments==2.19.1
 pygris==0.2.0
 pyogrio==0.11.0
 pyproj==3.6.1
+pyshp==2.3.1
 python-dateutil==2.9.0.post0
 pytz==2025.2
 requests==2.32.3
@@ -57,6 +58,7 @@ traitlets==5.14.3
 typing_extensions==4.12.2
 tzdata==2025.2
 urllib3==2.4.0
+utm==0.8.1
 vine==5.1.0
 wcwidth==0.2.13
 whitenoise==6.9.0
