@@ -22,8 +22,9 @@ class SaveRequest:
         if request.META.get("HTTP_USER_AGENT") in self.ignored_user_agents:
             return response
 
-        if self.get_client_ip(request) in self.ignored_ips:
-            return response
+        # if self.get_client_ip(request) in self.ignored_ips:
+        #     logger.warn()
+        #     return response
 
         if request.method == "POST":
             lat = request.POST["lat"] if "lat" in request.POST else None
@@ -64,6 +65,7 @@ class SaveRequest:
 
         campaign = Campaign.objects.filter(id=campaign_id).first()
         if campaign:
+            print(campaign.id)
             campaign.hit_count += 1
             campaign.save()
 
