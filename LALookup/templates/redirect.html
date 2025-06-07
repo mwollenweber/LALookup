@@ -38,7 +38,10 @@
               <!-- <img src="placeholder-headshot.png " class="card-img-top" alt="placeholder"> -->
               <div class="card-body">
                 <h5 class="card-title"> {{ result.first_name }} {{ result.last_name }}</h5>
-                <p class="card-text"> {{ result.office_title }}  {% if result.district  %} District: {{ result.district }} {% endif %} </p>
+                  <p class="card-text"> {{ result.office_title }}
+                    {% if result.office_description %} {{ result.office_description }} {% endif %}
+                    {% if result.district  %} District: {{ result.district }} {% endif %}
+                  </p>
               </div>
               <ul class="list-group list-group-flush">
                   {% if result.email  is not none %} <li class="list-group-item"><i class="bi bi-mailbox"> <a href="mailto:{{ result.email }}"> {{ result.email }}</a> </i> </li> {%  endif  %}
