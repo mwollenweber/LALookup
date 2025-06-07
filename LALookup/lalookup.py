@@ -39,9 +39,6 @@ def getContext(request):
 
 def locationIsValid(location):
     try:
-        print("42")
-        print(location)
-        state = location["state"]
         state = location["state"]
         return state in SUPPORTED_STATES
     except AttributeError:
@@ -101,13 +98,34 @@ def findShapeIndex(lat, lon, shape):
     for i in range(0, len(shape.geometry)):
         if shape.geometry[i].contains(Point(lon, lat)):
             return i
+    return -1
 
 
-def getCongressIndex(lat, lon):
-    shape = gp.read_file(settings.CONGRESSMAP)
+def getNOLACouncilDistrict(lat, lon):
+    shape = gp.read_file(settings.NOLACOUNCILMAP)
     shape = shape.to_crs("EPSG:4269")
     index = findShapeIndex(lat, lon, shape)
-    return index
+    return shape.DISTRICTID[index]
+
+
+def getNOLACityCouncilor(location):
+    lat = location["lat"]
+    lon = location["lon"]
+    district_name = f"District {getNOLACouncilDistrict(lat, lon)}"
+    councilor = SoSElectedOfficial.objects.filter(
+        parish__icontains="ORLEANS",
+        officeTitle="Councilmember",
+        officeDescription=district_name,
+    ).first()
+    return councilor.todict() if councilor else None
+
+
+def getCityCouncilors(location):
+    councilors = []
+    parish = location["county"]
+    if parish.upper() == "ORLEANS PARISH":
+        councilors.append(getNOLACityCouncilor(location))
+    return councilors
 
 
 def getCongressDistrict(lat, lon):
@@ -211,10 +229,11 @@ def getSenatorKennedy():
 
 def getElectedOfficials(location):
     elected_officials = []
+    elected_officials.append(getMayor(location))
+    elected_officials += getCityCouncilors(location)
     elected_officials.append(getStateSenator(location))
     elected_officials.append(getStateRep(location))
     elected_officials.append(getGovernor(location))
-    elected_officials.append(getMayor(location))
     elected_officials.append(getUSRep(location))
     elected_officials += getSenators(location)
     return elected_officials

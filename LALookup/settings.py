@@ -27,6 +27,7 @@ GMAP_APIKEY = os.getenv("GMAP_APIKEY") or warn(
 BASE_DIR = Path(__file__).resolve().parent.parent
 HOUSEMAP = f"{BASE_DIR}/data/tl_2023_22_sldl.shp"
 SENATEMAP = f"{BASE_DIR}/data/tl_2023_22_sldu.shp"
+NOLACOUNCILMAP = f"{BASE_DIR}/data/City_Council_Districts.shp"
 CONGRESSMAP = f"{BASE_DIR}/data/Congressional_Districts.shp"
 HOUSEMEMBERS = f"{BASE_DIR}/data/HouseMembers.csv"
 SENATEMEMBERS = f"{BASE_DIR}/data/SenateMembers.csv"
