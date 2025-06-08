@@ -37,10 +37,12 @@ def sitemap(request):
         f"{base_url}/emailMyStateSenator\n",
         f"{base_url}/callMyGovernor\n",
         f"{base_url}/emailMyGovernor\n",
-        f"{base_url}/callMyGov\n",
-        f"{base_url}/emailMyGov\n",
+        f"{base_url}/callMyGovernor\n",
+        f"{base_url}/emailMyGovernor\n",
         f"{base_url}/callMyMayor\n",
         f"{base_url}/emailMyMayor\n",
+        f"{base_url}/callCityCouncilor\n",
+        f"{base_url}/emailMyCityCouncilor\n",
         f"{base_url}/callMyUSRep\n",
         f"{base_url}/emailMyUSRep\n",
         f"{base_url}/api/adddressSearch\n",
@@ -53,6 +55,7 @@ def sitemap(request):
     return HttpResponse(urls, content_type="text/plain")
 
 
+@login_required
 @require_http_methods(["GET"])
 def activeCampaigns(request):
     template = loader.get_template("campaigns.html")
