@@ -30,6 +30,7 @@ urlpatterns = [
     path("emailMyUSRep", views.callMyUSRep),
     path("callMyUSRep", views.callMyUSRep),
     path("campaigns", views.activeCampaigns),
+    path("stats", views.stats),
     path("test", views.test),
     path("testBad", views.testBad),
     path("sitemap.txt", views.sitemap),

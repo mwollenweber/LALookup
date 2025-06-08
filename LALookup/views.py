@@ -18,6 +18,7 @@ from .lalookup import (
     getContext,
     getActiveCampaigns,
     getCityCouncilor,
+    getPageStats,
 )
 
 
@@ -57,6 +58,13 @@ def activeCampaigns(request):
     context = {
         "campaigns": getActiveCampaigns(),
     }
+    return HttpResponse(template.render(context, request))
+
+
+@require_http_methods(["GET"])
+def stats(request):
+    template = loader.get_template("stats.html")
+    context = {"page_stats": getPageStats()}
     return HttpResponse(template.render(context, request))
 
 

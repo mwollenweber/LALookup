@@ -4,10 +4,71 @@ import logging
 import googlemaps
 from shapely.geometry import Point
 from django.conf import settings
-from .models import Legislator, SoSElectedOfficial, Campaign
+from django.utils import timezone
+from .models import Legislator, SoSElectedOfficial, Campaign, Request
 from .settings import SUPPORTED_STATES, GMAP_APIKEY
 
+
 logger = logging.getLogger(__name__)
+
+
+def getPageStats():
+    page_list = [
+        "callMyStateRep",
+        "emailMyStateRep",
+        "callMyStateSenator",
+        "emailMyStateSenator",
+        "callMyCityCouncilor",
+        "emailMyCityCouncilor",
+        "callMyUSRep",
+        "emailMyUSRep",
+        "callSenatorCassidy",
+        "emailSenatorCassidy",
+        "callSenatorKennedy",
+        "emailSenatorKennedy",
+        "callMyGovernor",
+        "emailMyGovernor",
+        "locateMe",
+    ]
+    out_list = [
+        {
+            "name": "TOTAL",
+            "one_day": Request.objects.filter(
+                response_code=200,
+                date__gte=timezone.now() - timezone.timedelta(days=1),
+            ).count(),
+            "one_week": Request.objects.filter(
+                response_code=200,
+                date__gte=timezone.now() - timezone.timedelta(days=7),
+            ).count(),
+            "one_month": Request.objects.filter(
+                response_code=200,
+                date__gte=timezone.now() - timezone.timedelta(days=30),
+            ).count(),
+        }
+    ]
+    for page in page_list:
+        out_list.append(
+            {
+                "name": f"{page}",
+                "one_day": Request.objects.filter(
+                    response_code=200,
+                    date__gte=timezone.now() - timezone.timedelta(days=1),
+                    endpoint__icontains=f"{page}",
+                ).count(),
+                "one_week": Request.objects.filter(
+                    response_code=200,
+                    date__gte=timezone.now() - timezone.timedelta(days=7),
+                    endpoint__icontains=f"{page}",
+                ).count(),
+                "one_month": Request.objects.filter(
+                    response_code=200,
+                    date__gte=timezone.now() - timezone.timedelta(days=30),
+                    endpoint__icontains=f"{page}",
+                ).count(),
+            }
+        )
+    return out_list
 
 
 def getActiveCampaigns():
@@ -124,8 +185,11 @@ def getAllCityCouncilors(location):
     councilors = []
     parish = location["county"]
     if parish.upper() == "ORLEANS PARISH":
-        # todo Add At large
         councilors.append(getNOLACityCouncilor(location))
+        for c in SoSElectedOfficial.objects.filter(
+            parish__icontains="ORLEANS", officeTitle="Councilmember at Large"
+        ).all():
+            councilors.append(c.todict())
     return councilors
 
 

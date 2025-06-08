@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <title>Hit Stats</title>
+    <div class="container-fluid" id="results-container" >
+        <h1>Activity Stats</h1>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">Page</th>
+                    <th scope="col">24 Hour Hits</th>
+                    <th scope="col">7 Day Hits</th>
+                    <th scope="col">30 Day Hits</th>
+                </tr>
+          </thead>
+          <tbody>
+          {% for page in page_stats %}
+            <tr>
+                <td>{{ page.name }}</td>
+                <td>{{ page.one_day }}</td>
+                <td>{{ page.one_week }}</td>
+                <td>{{ page.one_month }}</td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+    </div>
+{% endblock content %}
