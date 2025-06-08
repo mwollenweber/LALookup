@@ -2,6 +2,7 @@ import logging
 from urllib.parse import unquote
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.http import require_http_methods
+from django.contrib.auth.decorators import login_required
 from django.template import loader
 from .lalookup import (
     address2latlon,
@@ -61,6 +62,7 @@ def activeCampaigns(request):
     return HttpResponse(template.render(context, request))
 
 
+@login_required
 @require_http_methods(["GET"])
 def stats(request):
     template = loader.get_template("stats.html")
