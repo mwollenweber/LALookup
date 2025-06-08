@@ -2,6 +2,7 @@ import logging
 from urllib.parse import unquote
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.http import require_http_methods
+from django.contrib.auth.decorators import login_required
 from django.template import loader
 from .lalookup import (
     address2latlon,
@@ -17,6 +18,8 @@ from .lalookup import (
     getSenatorKennedy,
     getContext,
     getActiveCampaigns,
+    getCityCouncilor,
+    getPageStats,
 )
 
 
@@ -34,10 +37,12 @@ def sitemap(request):
         f"{base_url}/emailMyStateSenator\n",
         f"{base_url}/callMyGovernor\n",
         f"{base_url}/emailMyGovernor\n",
-        f"{base_url}/callMyGov\n",
-        f"{base_url}/emailMyGov\n",
+        f"{base_url}/callMyGovernor\n",
+        f"{base_url}/emailMyGovernor\n",
         f"{base_url}/callMyMayor\n",
         f"{base_url}/emailMyMayor\n",
+        f"{base_url}/callCityCouncilor\n",
+        f"{base_url}/emailMyCityCouncilor\n",
         f"{base_url}/callMyUSRep\n",
         f"{base_url}/emailMyUSRep\n",
         f"{base_url}/api/adddressSearch\n",
@@ -50,12 +55,21 @@ def sitemap(request):
     return HttpResponse(urls, content_type="text/plain")
 
 
+@login_required
 @require_http_methods(["GET"])
 def activeCampaigns(request):
     template = loader.get_template("campaigns.html")
     context = {
         "campaigns": getActiveCampaigns(),
     }
+    return HttpResponse(template.render(context, request))
+
+
+@login_required
+@require_http_methods(["GET"])
+def stats(request):
+    template = loader.get_template("stats.html")
+    context = {"page_stats": getPageStats()}
     return HttpResponse(template.render(context, request))
 
 
@@ -135,6 +149,50 @@ def emailMyStateRep(request):
         template = loader.get_template("redirect.html")
         context = getContext(request)
         context["header"] = "Your Louisiana State Representative"
+        context["target_url"] = target_url
+        context["results"] = [official]
+        return HttpResponse(template.render(context, request))
+    else:
+        template = loader.get_template("locateme.html")
+        context = {}
+        return HttpResponse(template.render(context, request))
+
+
+@require_http_methods(["GET", "POST"])
+def callMyCouncilor(request):
+    if request.method == "POST":
+        lat = request.POST["lat"]
+        lon = request.POST["lon"]
+        location = getLocation(lat, lon)
+        if not locationIsValid(location):
+            return invalidState(request)
+        official = getCityCouncilor(location)
+        target_url = f"tel:{official['office_phone']}"
+        template = loader.get_template("redirect.html")
+        context = getContext(request)
+        context["header"] = "Your Council Person"
+        context["target_url"] = target_url
+        context["results"] = [official]
+        return HttpResponse(template.render(context, request))
+    else:
+        template = loader.get_template("locateme.html")
+        context = {}
+        return HttpResponse(template.render(context, request))
+
+
+@require_http_methods(["GET", "POST"])
+def emailMyCouncilor(request):
+    if request.method == "POST":
+        lat = request.POST["lat"]
+        lon = request.POST["lon"]
+        location = getLocation(lat, lon)
+        if not locationIsValid(location):
+            return invalidState(request)
+        official = getCityCouncilor(location)
+        target_url = f"mailto:{official['email']}"
+        template = loader.get_template("redirect.html")
+        context = getContext(request)
+        context["header"] = "Your Council Person"
         context["target_url"] = target_url
         context["results"] = [official]
         return HttpResponse(template.render(context, request))
@@ -349,6 +407,7 @@ def test(request):
     for r in results:
         logger.debug(f"test result: {r}")
     context = {"results": results}
+    context["title"] = "TEST"
     return HttpResponse(template.render(context, request))
 
 
@@ -364,6 +423,7 @@ def testBad(request):
     for r in results:
         logger.debug(f"test result: {r}")
     context = {"results": results}
+    context["title"] = "TEST BAD"
     return HttpResponse(template.render(context, request))
 
 
@@ -396,13 +456,16 @@ def renderResposne(request):
     context = {
         "results": results,
     }
+    context["title"] = "Render Response"
     return HttpResponse(template.render(context, request))
 
 
 @require_http_methods(["GET", "POST"])
 def invalidState(request):
     template = loader.get_template("location-not-supported.html")
-    context = {}
+    context = {
+        "title": "Invalid State",
+    }
     return HttpResponse(template.render(context, request))
 
 
