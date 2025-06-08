@@ -120,12 +120,21 @@ def getNOLACityCouncilor(location):
     return councilor.todict() if councilor else None
 
 
-def getCityCouncilors(location):
+def getAllCityCouncilors(location):
     councilors = []
     parish = location["county"]
     if parish.upper() == "ORLEANS PARISH":
+        #todo Add At large
         councilors.append(getNOLACityCouncilor(location))
     return councilors
+
+
+def getCityCouncilor(location):
+    parish = location["county"]
+    if parish.upper() == "ORLEANS PARISH":
+        return getNOLACityCouncilor(location)
+
+
 
 
 def getCongressDistrict(lat, lon):
@@ -230,7 +239,7 @@ def getSenatorKennedy():
 def getElectedOfficials(location):
     elected_officials = []
     elected_officials.append(getMayor(location))
-    elected_officials += getCityCouncilors(location)
+    elected_officials += getAllCityCouncilors(location)
     elected_officials.append(getStateSenator(location))
     elected_officials.append(getStateRep(location))
     elected_officials.append(getGovernor(location))

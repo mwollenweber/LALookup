@@ -19,6 +19,8 @@ urlpatterns = [
     path("emailMyRep", views.test),
     path("emailMyMayor", views.emailMyMayor),
     path("callMyMayor", views.callMyMayor),
+    path("callMyCityCouncilor", views.callMyCouncilor),
+    path("emailMyCityCouncilor", views.emailMyCouncilor),
     path("stateLegislators", views.LookupStateLegislators),
     path("locateMe", views.locateMe),
     path("callSenatorCassidy", views.callSenatorCassidy),
