@@ -20,6 +20,9 @@
     {% if image_url is not none %}
         <meta property="twitter:image" content="{{ image_url }}">
         <meta property="og:image" content="{{ image_url }}">
+    {% else %}
+        <meta property="twitter:image" content="https://action.defendlouisiana.org/static/default.png">
+        <meta property="og:image" content="https://action.defendlouisiana.org/static/default.png">
     {% endif %}
 
 {% endblock %}
