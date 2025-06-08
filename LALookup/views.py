@@ -158,7 +158,6 @@ def callMyCouncilor(request):
         template = loader.get_template("redirect.html")
         context = getContext(request)
         context["header"] = "Your Council Person"
-        context["title"] = "Your Council Person"
         context["target_url"] = target_url
         context["results"] = [official]
         return HttpResponse(template.render(context, request))
@@ -181,7 +180,6 @@ def emailMyCouncilor(request):
         template = loader.get_template("redirect.html")
         context = getContext(request)
         context["header"] = "Your Council Person"
-        context["title"] = "Your Council Person"
         context["target_url"] = target_url
         context["results"] = [official]
         return HttpResponse(template.render(context, request))
@@ -189,7 +187,6 @@ def emailMyCouncilor(request):
         template = loader.get_template("locateme.html")
         context = {}
         return HttpResponse(template.render(context, request))
-
 
 
 @require_http_methods(["GET", "POST"])
@@ -453,7 +450,9 @@ def renderResposne(request):
 @require_http_methods(["GET", "POST"])
 def invalidState(request):
     template = loader.get_template("location-not-supported.html")
-    context = {}
+    context = {
+        "title": "Invalid State",
+    }
     return HttpResponse(template.render(context, request))
 
 

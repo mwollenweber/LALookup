@@ -124,7 +124,7 @@ def getAllCityCouncilors(location):
     councilors = []
     parish = location["county"]
     if parish.upper() == "ORLEANS PARISH":
-        #todo Add At large
+        # todo Add At large
         councilors.append(getNOLACityCouncilor(location))
     return councilors
 
@@ -133,8 +133,6 @@ def getCityCouncilor(location):
     parish = location["county"]
     if parish.upper() == "ORLEANS PARISH":
         return getNOLACityCouncilor(location)
-
-
 
 
 def getCongressDistrict(lat, lon):
